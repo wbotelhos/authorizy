@@ -4,6 +4,7 @@ module Authorizy
   require 'authorizy/base_cop'
   require 'authorizy/config'
   require 'authorizy/core'
+  require 'authorizy/expander'
   require 'authorizy/extension'
 
   class << self

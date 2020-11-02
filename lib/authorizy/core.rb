@@ -29,17 +29,6 @@ module Authorizy
 
     private
 
-    attr_reader :params, :session
-
-    def actions
-      {
-        'create' => 'new',
-        'edit'   => 'update',
-        'new'    => 'create',
-        'update' => 'edit',
-      }.merge(@aliases)
-    end
-
     def cop
       Authorizy.config.cop.new(@current_user, @params, @session, @controller, @action)
     end
@@ -48,43 +37,10 @@ module Authorizy
       @controller.sub('/', '__')
     end
 
-    def dependencies
-      @dependencies.stringify_keys
-    end
-
-    def expand(permissions)
-      return [] if permissions.blank?
-
-      all_permissions = []
-      all_permissions += permissions
-
-      permissions.each do |permission|
-        item = permission.stringify_keys
-
-        matched_controller = dependencies[item['controller'].to_s]
-
-        if matched_controller.present?
-          items = matched_controller.stringify_keys[item['action'].to_s]
-
-          all_permissions += items if items.present?
-        end
-
-        matched_action = [actions[item['action'].to_s]].flatten.compact
-
-        next if matched_action.blank?
-
-        matched_action.each do |action|
-          all_permissions << { action: action.to_s, controller: item['controller'].to_s }
-        end
-      end
-
-      all_permissions
-    end
-
     def permissions
-      items = [session[:permissions]].flatten.compact.presence || @current_user.authorizy.try(:[], 'permissions')
-
-      expand(items)
+      Authorizy::Expander.new(@aliases, @dependencies).expand(
+        [@session[:permissions]].flatten.compact.presence || @current_user.authorizy.try(:[], 'permissions')
+      )
     end
   end
 end
