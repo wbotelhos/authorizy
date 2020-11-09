@@ -15,21 +15,18 @@ module Authorizy
       permissions.each do |permission|
         item = permission.stringify_keys.transform_values(&:to_s)
 
-        result["#{item['controller']}##{item['action']}"] = item
+        result[key_for(item)] = item
 
         if (items = controller_dependency(item))
-          items.each { |data| result["#{data['controller']}##{data['action']}"] = data }
+          items.each { |data| result[key_for(data)] = data }
         end
 
-        actions = [default_aliases[item['action'].to_s]].flatten.compact
+        actions = [default_aliases[item['action']]].flatten.compact
 
         next if actions.blank?
 
         actions.each do |action|
-          result["#{item['controller']}##{action}"] = {
-            'action'     => action.to_s,
-            'controller' => item['controller'].to_s
-          }
+          result[key_for(item, action: action)] = { 'action' => action.to_s, 'controller' => item['controller'].to_s }
         end
       end
 
@@ -37,6 +34,13 @@ module Authorizy
     end
 
     private
+
+    def controller_dependency(item)
+      return if (actions = @dependencies[item['controller']]).blank?
+      return if (permissions = actions[item['action']]).blank?
+
+      permissions.map { |permission| permission.transform_values(&:to_s) }
+    end
 
     def default_aliases
       {
@@ -47,11 +51,8 @@ module Authorizy
       }.merge(@aliases)
     end
 
-    def controller_dependency(item)
-      return if (controller = @dependencies[item['controller'].to_s]).blank?
-      return if (items = controller.stringify_keys[item['action'].to_s]).blank?
-
-      items.map { |item| item.transform_values(&:to_s) }
+    def key_for(item, action: nil)
+      "#{item['controller']}##{action || item['action']}"
     end
   end
 end
