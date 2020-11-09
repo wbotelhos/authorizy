@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Authorizy::Core, '#access?' do
-  context 'when permissions is on session as string' do
+  context 'when permissions is in session as string' do
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
     let!(:session) { { permissions: [{ action: 'create', controller: 'match' }] } }
@@ -21,7 +21,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     end
   end
 
-  context 'when session has no permission' do
+  context 'when permissions is not in session' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
     let!(:current_user) { User.create!(authorizy: { permissions: [{ action: 'create', controller: 'match' }] }) }
@@ -121,30 +121,6 @@ RSpec.describe Authorizy::Core, '#access?' do
     end
   end
 
-  context 'when a dependencies is given' do
-    subject(:authorizy) { described_class.new(current_user, params, session, dependencies: dependencies) }
-
-    let!(:current_user) { User.create!(authorizy: { permissions: [{ action: :action, controller: :controller }] }) }
-    let!(:params) { { 'action' => 'action2', 'controller' => 'controller2' } }
-    let!(:session) { {} }
-
-    context 'when keys and values are string' do
-      let!(:dependencies) { { 'controller' => { 'action' => [{ 'action' => 'action2', 'controller' => 'controller2' }] } } }
-
-      it 'is mapped via the original permission' do
-        expect(authorizy.access?).to be(true)
-      end
-    end
-
-    context 'when keys and values are symbol' do
-      let!(:dependencies) { { controller: { action: [{ action: :action2, controller: :controller2 }] } } }
-
-      it 'is mapped via the original permission' do
-        expect(authorizy.access?).to be(true)
-      end
-    end
-  end
-
   context 'when user has the controller permission but not action' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
@@ -166,6 +142,30 @@ RSpec.describe Authorizy::Core, '#access?' do
 
     it 'cannot access' do
       expect(authorizy.access?).to be(false)
+    end
+  end
+
+  context 'when a dependencies is given' do
+    subject(:authorizy) { described_class.new(current_user, params, session, dependencies: dependencies) }
+
+    let!(:current_user) { User.create!(authorizy: { permissions: [{ action: :action, controller: :controller }] }) }
+    let!(:params) { { 'action' => 'action2', 'controller' => 'controller2' } }
+    let!(:session) { {} }
+
+    context 'when keys and values are string' do
+      let!(:dependencies) { { 'controller' => { 'action' => [{ 'action' => 'action2', 'controller' => 'controller2' }] } } }
+
+      it 'is mapped via the original permission' do
+        expect(authorizy.access?).to be(true)
+      end
+    end
+
+    context 'when keys and values are symbol' do
+      let!(:dependencies) { { controller: { action: [{ action: :action2, controller: :controller2 }] } } }
+
+      it 'is mapped via the original permission' do
+        expect(authorizy.access?).to be(true)
+      end
     end
   end
 
