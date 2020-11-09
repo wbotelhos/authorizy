@@ -3,32 +3,37 @@
 module Authorizy
   class Expander
     def initialize(aliases, dependencies)
-      @aliases      = aliases
-      @dependencies = dependencies.stringify_keys
+      @aliases      = aliases.stringify_keys
+      @dependencies = dependencies.deep_stringify_keys
     end
 
     def expand(permissions)
       return [] if permissions.blank?
 
-      result = permissions.dup
+      result = {}
 
       permissions.each do |permission|
-        item = permission.stringify_keys
+        item = permission.stringify_keys.transform_values(&:to_s)
+
+        result["#{item['controller']}##{item['action']}"] = item
 
         if (items = controller_dependency(item))
-          result += items
+          items.each { |data| result["#{data['controller']}##{data['action']}"] = data }
         end
 
-        action = [default_aliases[item['action'].to_s]].flatten.compact
+        actions = [default_aliases[item['action'].to_s]].flatten.compact
 
-        next if action.blank?
+        next if actions.blank?
 
-        action.each do |action|
-          result << { action: action.to_s, controller: item['controller'].to_s }
+        actions.each do |action|
+          result["#{item['controller']}##{action}"] = {
+            'action'     => action.to_s,
+            'controller' => item['controller'].to_s
+          }
         end
       end
 
-      result
+      result.values
     end
 
     private
@@ -46,7 +51,7 @@ module Authorizy
       return if (controller = @dependencies[item['controller'].to_s]).blank?
       return if (items = controller.stringify_keys[item['action'].to_s]).blank?
 
-      items
+      items.map { |item| item.transform_values(&:to_s) }
     end
   end
 end
