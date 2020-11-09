@@ -4,14 +4,14 @@ RSpec.describe Authorizy::Core, '#access?' do
   context 'when permissions is in session as string' do
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
-    let!(:session) { { permissions: [{ action: 'create', controller: 'match' }] } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'match' }] } }
 
     it 'uses the session value skipping the user fetch' do
       expect(described_class.new(current_user, params, session).access?).to be(true)
     end
   end
 
-  context 'when permission value is stubbed as symbol' do
+  context 'when permission is in session as symbol' do
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
     let!(:session) { { permissions: [{ action: :create, controller: :match }] } }
@@ -145,52 +145,27 @@ RSpec.describe Authorizy::Core, '#access?' do
     end
   end
 
-  context 'when a dependencies is given' do
+  context 'when dependencies is given' do
     subject(:authorizy) { described_class.new(current_user, params, session, dependencies: dependencies) }
 
-    let!(:current_user) { User.create!(authorizy: { permissions: [{ action: :action, controller: :controller }] }) }
+    let!(:current_user) { User.new }
+    let!(:dependencies) { { 'controller' => { 'action' => [{ 'action' => 'action2', 'controller' => 'controller2' }] } } }
     let!(:params) { { 'action' => 'action2', 'controller' => 'controller2' } }
-    let!(:session) { {} }
+    let!(:session) { { 'permissions' => [{ 'action'=> 'action', 'controller' => 'controller' }] } }
 
-    context 'when keys and values are string' do
-      let!(:dependencies) { { 'controller' => { 'action' => [{ 'action' => 'action2', 'controller' => 'controller2' }] } } }
-
-      it 'is mapped via the original permission' do
-        expect(authorizy.access?).to be(true)
-      end
-    end
-
-    context 'when keys and values are symbol' do
-      let!(:dependencies) { { controller: { action: [{ action: :action2, controller: :controller2 }] } } }
-
-      it 'is mapped via the original permission' do
-        expect(authorizy.access?).to be(true)
-      end
+    it 'is mapped via the original permission' do
+      expect(authorizy.access?).to be(true)
     end
   end
 
-  context 'when user has an action alias' do
-    context 'when default alias is used' do
-      subject(:authorizy) { described_class.new(current_user, params, session) }
+  context 'when aliases is given' do
+    subject(:authorizy) { described_class.new(current_user, params, session, aliases: aliases) }
 
-      let!(:current_user) { User.new }
-      let!(:params) { { 'action' => 'new', 'controller' => 'controller' } }
+    let!(:aliases) { { 'alias' => 'aliased' } }
+    let!(:current_user) { User.new }
+    let!(:params) { { 'action' => 'aliased', 'controller' => 'controller' } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'alias', 'controller' => 'controller' }] } }
 
-      # create cover new action
-      let!(:session) { { permissions: [{ action: 'create', controller: 'controller' }] } }
-
-      it { expect(authorizy.access?).to be(true) }
-    end
-
-    context 'when alias is given' do
-      subject(:authorizy) { described_class.new(current_user, params, session, aliases: aliases) }
-
-      let!(:aliases) { { 'alias' => 'aliased' } }
-      let!(:current_user) { User.new }
-      let!(:params) { { 'action' => 'aliased', 'controller' => 'controller' } }
-      let!(:session) { { permissions: [{ action: 'alias', controller: 'controller' }] } }
-
-      it { expect(authorizy.access?).to be(true) }
-    end
+    it { expect(authorizy.access?).to be(true) }
   end
 end

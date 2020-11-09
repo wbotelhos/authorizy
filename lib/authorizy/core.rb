@@ -39,7 +39,7 @@ module Authorizy
 
     def permissions
       Authorizy::Expander.new(@aliases, @dependencies).expand(
-        [@session[:permissions]].flatten.compact.presence || @current_user.authorizy.try(:[], 'permissions')
+        [@session.stringify_keys['permissions']].flatten.compact.presence || @current_user.authorizy.try(:[], 'permissions')
       )
     end
   end
