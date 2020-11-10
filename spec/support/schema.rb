@@ -5,12 +5,13 @@ require 'support/models/user'
 
 ActiveRecord::Base.establish_connection(
   adapter:  'postgresql',
-  database: 'authorizy_test',
   host:     'localhost',
   username: 'postgres',
 )
 
-ActiveRecord::Base.connection.execute('DROP TABLE users;')
+ActiveRecord::Base.connection.execute('DROP DATABASE IF EXISTS authorizy_test;')
+ActiveRecord::Base.connection.execute('CREATE DATABASE authorizy_test;')
+ActiveRecord::Base.connection.execute('DROP TABLE IF EXISTS users;')
 
 ActiveRecord::Schema.define(version: 1) do
   enable_extension 'plpgsql'
