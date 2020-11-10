@@ -4,7 +4,6 @@ require 'support/controllers/dummy_controller'
 
 RSpec.describe DummyController, '#authorizy', type: :controller do
   let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'dummy', action: 'action') }
-  let!(:user) { User.create! }
 
   Rails.application.routes.draw { get :action, to: 'dummy#action' }
 
