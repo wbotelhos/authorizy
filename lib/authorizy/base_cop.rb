@@ -13,5 +13,9 @@ module Authorizy
     def access?
       false
     end
+
+    protected
+
+    attr_reader :action, :controller, :current_user, :params, :session
   end
 end
