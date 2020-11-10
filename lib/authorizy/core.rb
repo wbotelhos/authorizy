@@ -13,15 +13,15 @@ module Authorizy
     def access?
       return false if @current_user.blank?
 
-      released = cop.public_send(cop_controller) if cop.respond_to?(cop_controller)
-
-      return true if released
-
-      permissions.any? do |item|
+      granted = permissions.any? do |item|
         data = item.stringify_keys
 
         data['controller'].to_s == @controller && data['action'].to_s == @action
       end
+
+      return true if granted
+
+      cop.respond_to?(cop_controller) && cop.public_send(cop_controller)
     end
 
     private
