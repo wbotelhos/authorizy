@@ -134,28 +134,4 @@ RSpec.describe Authorizy::Core, '#access?' do
       expect(authorizy.access?).to be(false)
     end
   end
-
-  context 'when dependencies is given' do
-    subject(:authorizy) { described_class.new(current_user, params, session, dependencies: dependencies) }
-
-    let!(:current_user) { User.new }
-    let!(:dependencies) { { 'controller' => { 'action' => [{ 'action' => 'action2', 'controller' => 'controller2' }] } } }
-    let!(:params) { { 'action' => 'action2', 'controller' => 'controller2' } }
-    let!(:session) { { 'permissions' => [{ 'action'=> 'action', 'controller' => 'controller' }] } }
-
-    it 'is mapped via the original permission' do
-      expect(authorizy.access?).to be(true)
-    end
-  end
-
-  context 'when aliases is given' do
-    subject(:authorizy) { described_class.new(current_user, params, session, aliases: aliases) }
-
-    let!(:aliases) { { 'alias' => 'aliased' } }
-    let!(:current_user) { User.new }
-    let!(:params) { { 'action' => 'aliased', 'controller' => 'controller' } }
-    let!(:session) { { 'permissions' => [{ 'action' => 'alias', 'controller' => 'controller' }] } }
-
-    it { expect(authorizy.access?).to be(true) }
-  end
 end

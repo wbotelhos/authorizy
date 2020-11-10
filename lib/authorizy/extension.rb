@@ -6,13 +6,7 @@ module Authorizy
 
     included do
       def authorizy
-        return if Authorizy::Core.new(
-          Authorizy.config.current_user.call(self),
-          params,
-          session,
-          aliases: Authorizy.config.aliases,
-          dependencies: Authorizy.config.dependencies
-        ).access?
+        return if Authorizy::Core.new(Authorizy.config.current_user.call(self), params, session).access?
 
         info = I18n.t('authorizy.denied', action: params[:action], controller: params[:controller])
 

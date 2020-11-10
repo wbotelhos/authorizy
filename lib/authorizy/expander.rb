@@ -2,11 +2,6 @@
 
 module Authorizy
   class Expander
-    def initialize(aliases, dependencies)
-      @aliases      = aliases.stringify_keys
-      @dependencies = dependencies.deep_stringify_keys
-    end
-
     def expand(permissions)
       return [] if permissions.blank?
 
@@ -35,8 +30,12 @@ module Authorizy
 
     private
 
+    def aliases
+      Authorizy.config.aliases.stringify_keys
+    end
+
     def controller_dependency(item)
-      return if (actions = @dependencies[item['controller']]).blank?
+      return if (actions = dependencies[item['controller']]).blank?
       return if (permissions = actions[item['action']]).blank?
 
       permissions.map { |permission| permission.transform_values(&:to_s) }
@@ -48,7 +47,11 @@ module Authorizy
         'edit'   => 'update',
         'new'    => 'create',
         'update' => 'edit',
-      }.merge(@aliases)
+      }.merge(aliases)
+    end
+
+    def dependencies
+      Authorizy.config.dependencies.deep_stringify_keys
     end
 
     def key_for(item, action: nil)

@@ -2,12 +2,10 @@
 
 module Authorizy
   class Core
-    def initialize(current_user, params, session, controller: params['controller'], action: params['action'], aliases: {}, dependencies: {})
+    def initialize(current_user, params, session, controller: params['controller'], action: params['action'])
       @action       = action.to_s
-      @aliases      = aliases
       @controller   = controller.to_s
       @current_user = current_user
-      @dependencies = dependencies
       @params       = params
       @session      = session
     end
@@ -38,7 +36,7 @@ module Authorizy
     end
 
     def permissions
-      Authorizy::Expander.new(@aliases, @dependencies).expand(
+      Authorizy::Expander.new.expand(
         [@session['permissions']].flatten.compact.presence || @current_user.authorizy.try(:[], 'permissions')
       )
     end
