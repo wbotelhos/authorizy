@@ -11,22 +11,12 @@ RSpec.describe Authorizy::Core, '#access?' do
     end
   end
 
-  context 'when permission is in session as symbol' do
-    let!(:current_user) { User.new }
-    let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
-    let!(:session) { { permissions: [{ action: :create, controller: :match }] } }
-
-    it 'uses the session value skipping the user fetch' do
-      expect(described_class.new(current_user, params, session).access?).to be(true)
-    end
-  end
-
   context 'when permissions is not in session' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
     let!(:current_user) { User.create!(authorizy: { permissions: [{ action: 'create', controller: 'match' }] }) }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
-    let!(:session) { { permissions: [{ action: 'create', controller: 'match' }] } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'match' }] } }
 
     it 'fetches the permission from user' do
       expect(authorizy.access?).to be(true)
@@ -102,7 +92,7 @@ RSpec.describe Authorizy::Core, '#access?' do
 
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'action', 'controller' => 'ignored' } }
-    let!(:session) { { permissions: [{ action: 'action', controller: 'controller' }] } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'action', 'controller' => 'controller' }] } }
 
     it 'uses the given controller over the one on params' do
       expect(authorizy.access?).to be(true)
@@ -126,7 +116,7 @@ RSpec.describe Authorizy::Core, '#access?' do
 
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'action', 'controller' => 'controller' } }
-    let!(:session) { { permissions: [{ action: 'miss', controller: 'controller' }] } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'miss', 'controller' => 'controller' }] } }
 
     it 'cannot access' do
       expect(authorizy.access?).to be(false)
@@ -138,7 +128,7 @@ RSpec.describe Authorizy::Core, '#access?' do
 
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'action', 'controller' => 'controller' } }
-    let!(:session) { { permissions: [{ action: 'action', controller: 'miss' }] } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'miss' }] } }
 
     it 'cannot access' do
       expect(authorizy.access?).to be(false)
