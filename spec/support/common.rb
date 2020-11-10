@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rspec'
+require 'rspec/rails'
 
 RSpec.configure do |config|
   config.disable_monkey_patching!

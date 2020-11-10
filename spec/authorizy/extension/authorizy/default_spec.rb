@@ -1,21 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe Authorizy::Extension, '#authorizy', type: :controller do
-  controller do
-    include Authorizy::Extension
+require 'support/controllers/default_controller'
 
-    before_action :authorizy
-
-    def action
-      render json: { message: 'authorized' }
-    end
-  end
-
+RSpec.describe DefaultController, '#authorizy', type: :controller do
   before do
-    routes.draw { get :action, to: 'anonymous#action' }
+    Rails.application.routes.draw { get :action, to: 'default#action' }
   end
 
-  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'anonymous', action: 'action') }
+  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'default', action: 'action') }
 
   context 'when user has access' do
     let!(:authorizy_core) { instance_double('Authorizy::Core', access?: true) }
@@ -58,7 +50,7 @@ RSpec.describe Authorizy::Extension, '#authorizy', type: :controller do
       it 'receives the default values and denied the access' do
         get :action, xhr: true, params: { key: 'value' }
 
-        expect(response.body).to   eq('{"message":"Action denied for anonymous#action"}')
+        expect(response.body).to   eq('{"message":"Action denied for default#action"}')
         expect(response.status).to be(422)
       end
     end
@@ -69,7 +61,7 @@ RSpec.describe Authorizy::Extension, '#authorizy', type: :controller do
 
         expect(response).to redirect_to '/'
 
-        # expect(flash[:info]).to eq('Action denied for anonymous#action') # TODO: get flash message
+        # expect(flash[:info]).to eq('Action denied for default#action') # TODO: get flash message
       end
     end
   end

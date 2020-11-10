@@ -1,44 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.describe Authorizy::Extension, '#authorizy', type: :controller do
-  controller do
-    include Authorizy::Extension
+require 'support/controllers/custom_controller'
 
-    before_action :authorizy
-
-    def action
-      render json: { message: 'authorized' }
-    end
-
-    def authorizy_aliases
-      { index: 'gridy' }
-    end
-
-    def authorizy_dependencies
-      {
-        'admin/payments' => {
-          index: [
-            { action: :show, controller: 'admin/payments' },
-          ],
-        },
-      }
-    end
-
-    def authorizy_redirect_url
-      '/login'
-    end
-
-    def current_user
-      User.last
-    end
-  end
-
+RSpec.describe CustomController, '#authorizy', type: :controller do
   before do
-    routes.draw { get :action, to: 'anonymous#action' }
+    Rails.application.routes.draw { get :action, to: 'custom#action' }
   end
 
   let!(:aliases) { { index: 'gridy' } }
-  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'anonymous', action: 'action') }
+  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'custom', action: 'action') }
   let!(:user) { User.create! }
 
   let!(:dependencies) do
@@ -92,7 +62,7 @@ RSpec.describe Authorizy::Extension, '#authorizy', type: :controller do
       it 'receives the default values and denied the access' do
         get :action, xhr: true, params: { key: 'value' }
 
-        expect(response.body).to   eq('{"message":"Action denied for anonymous#action"}')
+        expect(response.body).to   eq('{"message":"Action denied for custom#action"}')
         expect(response.status).to be(422)
       end
     end
@@ -103,7 +73,7 @@ RSpec.describe Authorizy::Extension, '#authorizy', type: :controller do
 
         expect(response).to redirect_to '/login'
 
-        # expect(flash[:info]).to eq('Action denied for anonymous#action') # TODO: get flash message
+        # expect(flash[:info]).to eq('Action denied for custom#action') # TODO: get flash message
       end
     end
   end
