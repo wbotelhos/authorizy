@@ -16,7 +16,6 @@ module Authorizy
       released = cop.public_send(cop_controller) if cop.respond_to?(cop_controller)
 
       return true if released
-      return false if permissions.blank?
 
       permissions.any? do |item|
         data = item.stringify_keys
