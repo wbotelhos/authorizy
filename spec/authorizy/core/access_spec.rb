@@ -3,8 +3,8 @@
 RSpec.describe Authorizy::Core, '#access?' do
   context 'when permissions is in session as string' do
     let!(:current_user) { User.new }
-    let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
-    let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'match' }] } }
+    let!(:params) { { 'action' => 'create', 'controller' => 'controller' } }
+    let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'controller' }] } }
 
     it 'uses the session value skipping the user fetch' do
       expect(described_class.new(current_user, params, session).access?).to be(true)
