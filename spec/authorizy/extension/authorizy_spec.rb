@@ -5,8 +5,6 @@ require 'support/controllers/dummy_controller'
 RSpec.describe DummyController, '#authorizy', type: :controller do
   let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'dummy', action: 'action') }
 
-  Rails.application.routes.draw { get :action, to: 'dummy#action' }
-
   context 'when user has access' do
     let!(:authorizy_core) { instance_double('Authorizy::Core', access?: true) }
 

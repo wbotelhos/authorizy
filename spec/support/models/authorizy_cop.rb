@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 
 class AuthorizyCop < Authorizy::BaseCop
+  def admin__dummy
+    params[:admin] == 'true'
+  end
+
   def dummy
     params[:access] == 'true'
   end

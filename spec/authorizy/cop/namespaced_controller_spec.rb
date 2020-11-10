@@ -2,17 +2,17 @@
 
 require 'support/models/authorizy_cop'
 require 'support/models/empty_cop'
-require 'support/controllers/dummy_controller'
+require 'support/controllers/admin/dummy_controller'
 
-RSpec.describe DummyController, '#authorizy', type: :controller do
-  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'dummy', action: 'action') }
+RSpec.describe Admin::DummyController, '#authorizy', type: :controller do
+  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'admin/users', action: 'action') }
   let!(:user) { User.new }
 
   context 'when cop responds to the controller name' do
     context 'when method resturns false' do
       it 'denies the access' do
         config_mock(cop: AuthorizyCop, current_user: user) do
-          get :action, params: { access: false }
+          get :action, params: { admin: false }
         end
 
         expect(response).to redirect_to('/')
@@ -22,7 +22,7 @@ RSpec.describe DummyController, '#authorizy', type: :controller do
     context 'when method resturns true' do
       it 'denies the access' do
         config_mock(cop: AuthorizyCop, current_user: user) do
-          get :action, params: { access: true }
+          get :action, params: { admin: true }
         end
 
         expect(response.body).to eq('{"message":"authorized"}')
