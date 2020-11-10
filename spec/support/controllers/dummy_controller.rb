@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DefaultController < ActionController::Base
+class DummyController < ActionController::Base
   include Authorizy::Extension
 
   before_action :authorizy
