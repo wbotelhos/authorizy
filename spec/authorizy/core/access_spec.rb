@@ -14,9 +14,9 @@ RSpec.describe Authorizy::Core, '#access?' do
   context 'when permissions is not in session' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
-    let!(:current_user) { User.create!(authorizy: { permissions: [{ action: 'create', controller: 'match' }] }) }
+    let!(:current_user) { User.new(authorizy: { permissions: [{ action: 'create', controller: 'match' }] }) }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
-    let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'match' }] } }
+    let!(:session) { {} }
 
     it 'fetches the permission from user' do
       expect(authorizy.access?).to be(true)
@@ -102,9 +102,9 @@ RSpec.describe Authorizy::Core, '#access?' do
   context 'when action is given' do
     subject(:authorizy) { described_class.new(current_user, params, session, action: 'action') }
 
-    let!(:current_user) { User.create!(authorizy: { permissions: [{ action: 'action', controller: 'controller' }] }) }
+    let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'ignored', 'controller' => 'controller' } }
-    let!(:session) { {} }
+    let!(:session) { { 'permissions' => [{ 'action' => 'action', 'controller' => 'controller' }] } }
 
     it 'uses the given action over the one on params' do
       expect(authorizy.access?).to be(true)
