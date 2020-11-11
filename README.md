@@ -23,7 +23,7 @@ gem 'authorizy'
 Run the following task to create Authorizy migration and initialize.
 
 ```sh
-rails g rating:install
+rails g authorizy:install
 ```
 
 Then execute the migration to adds the column `authorizy` to your `users` table.
