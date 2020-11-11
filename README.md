@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/authorizy.svg)](https://badge.fury.io/rb/authorizy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f312587b4f126bb13e85/maintainability)](https://codeclimate.com/github/wbotelhos/authorizy/maintainability)
 [![Coverage](https://codecov.io/gh/wbotelhos/blogy/branch/master/graph/badge.svg?token=PENDING)](https://codecov.io/gh/wbotelhos/authorizy)
-[![Sponsor](https://img.shields.io/badge/donate-%3C3-brightgreen.svg)](https://www.patreon.com/wbotelhos)
+[![Sponsor](https://img.shields.io/badge/sponsor-%3C3-green)](https://www.patreon.com/wbotelhos)
 
 A JSON based Authorization.
 
