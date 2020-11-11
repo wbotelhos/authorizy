@@ -16,6 +16,7 @@ Gem::Specification.new do |spec|
   spec.version          = Authorizy::VERSION
 
   spec.add_development_dependency 'activerecord'
+  spec.add_development_dependency 'codecov'
   spec.add_development_dependency 'pg'
   spec.add_development_dependency 'pry-byebug'
   spec.add_development_dependency 'rake'

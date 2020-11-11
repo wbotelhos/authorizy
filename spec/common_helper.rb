@@ -2,6 +2,8 @@
 
 ENV['RAILS_ENV'] ||= 'test'
 
+require 'support/coverage'
+
 require 'support/application'
 require 'support/common'
 require 'support/i18n'
