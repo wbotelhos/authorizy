@@ -55,8 +55,8 @@ The column `authorizy` is a JSON column that has a key called `permission` with 
 ```ruby
 {
   permissions: [
-    { controller: :user, action: :create },
-    { controller: :user, action: :update },
+    { controller: :users, action: :create },
+    { controller: :users, action: :update },
   }
 }
 ```
@@ -93,8 +93,8 @@ Authorizy.configure do |config|
   config.dependencies = {
     payments: {
       index: [
-        { controller: :users, action: :index },
-        { controller: :enrollments, action: :index },
+        { controller: 'system/users', action: :index },
+        { controller: 'system/enrollments', action: :index },
       ]
     }
   }
@@ -146,7 +146,7 @@ By default Authorizy fetch the current user from the variable `current_user`. Yo
 
 ```ruby
 Authorizy.configure do |config|
-  config.current_user -> (context) { context.current_person }
+  config.current_user = -> (context) { context.current_person }
 end
 ```
 
@@ -156,7 +156,7 @@ When authorization fails and the request is not a XHR request a redirect happens
 
 ```ruby
 Authorizy.configure do |config|
-  config.redirect_url -> (context) { context.new_session_url }
+  config.redirect_url = -> (context) { context.new_session_url }
 end
 ```
 
