@@ -11,7 +11,7 @@ jobs:
         env:
           POSTGRES_HOST_AUTH_METHOD: trust
 
-        image: postgres:11-alpine
+        image: postgres:13-alpine
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
         ports:
