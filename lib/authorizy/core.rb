@@ -13,15 +13,19 @@ module Authorizy
     def access?
       return false if @current_user.blank?
 
-      granted = permissions.any? do |item|
-        data = item.stringify_keys
+      return true if cop.access?
 
-        data['controller'].to_s == @controller && data['action'].to_s == @action
-      end
+      session_granted = session_permissions.map(&:stringify_keys).any? { |item| route_match?(item) }
 
-      return true if granted
+      return true if session_granted
 
-      cop.respond_to?(cop_controller) && cop.public_send(cop_controller)
+      current_user_granted = current_user_permissions.map(&:stringify_keys).any? { |item| route_match?(item) }
+
+      return true if current_user_granted
+
+      return cop.public_send(cop_controller) if cop.respond_to?(cop_controller)
+
+      false
     end
 
     private
@@ -34,10 +38,22 @@ module Authorizy
       @controller.sub('/', '__')
     end
 
-    def permissions
-      Authorizy::Expander.new.expand(
-        [@session['permissions']].flatten.compact.presence || @current_user.authorizy.try(:[], 'permissions')
-      )
+    def expand(permissions)
+      return [] if permissions.blank?
+
+      Authorizy::Expander.new.expand(permissions)
+    end
+
+    def session_permissions
+      expand([@session['permissions']].flatten.compact)
+    end
+
+    def current_user_permissions
+      expand(@current_user.authorizy.try(:[], 'permissions'))
+    end
+
+    def route_match?(item)
+      item['controller'].to_s == @controller && item['action'].to_s == @action
     end
   end
 end

@@ -1,24 +1,40 @@
 # frozen_string_literal: true
 
 RSpec.describe Authorizy::Core, '#access?' do
+  context 'when cop#access? returns true' do
+    let!(:current_user) { User.new }
+    let!(:params) { { 'action' => 'any', 'controller' => 'any' } }
+    let!(:session) { {} }
+
+    let!(:cop) { instance_double('Authorizy::BaseCop', access?: true) }
+
+    it 'uses the session value' do
+      allow(Authorizy::BaseCop).to receive(:new)
+        .with(current_user, params, session, 'any', 'any')
+        .and_return(cop)
+
+      expect(described_class.new(current_user, params, session).access?).to be(true)
+    end
+  end
+
   context 'when permissions is in session as string' do
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'create', 'controller' => 'controller' } }
     let!(:session) { { 'permissions' => [{ 'action' => 'create', 'controller' => 'controller' }] } }
 
-    it 'uses the session value skipping the user fetch' do
+    it 'uses the session value' do
       expect(described_class.new(current_user, params, session).access?).to be(true)
     end
   end
 
-  context 'when permissions is not in session' do
+  context 'when permissions is in current user' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
     let!(:current_user) { User.new(authorizy: { permissions: [{ action: 'create', controller: 'match' }] }) }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
     let!(:session) { {} }
 
-    it 'fetches the permission from user' do
+    it 'uses the session value' do
       expect(authorizy.access?).to be(true)
     end
   end
@@ -36,13 +52,13 @@ RSpec.describe Authorizy::Core, '#access?' do
   context 'when cop does not respond to controller' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
-    let!(:cop) { instance_double('Authorizy.config.cop') }
+    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'create', 'controller' => 'missing' } }
     let!(:session) { {} }
 
     before do
-      allow(Authorizy.config.cop).to receive(:new)
+      allow(Authorizy::BaseCop).to receive(:new)
         .with(current_user, params, session, 'missing', 'create')
         .and_return(cop)
 
@@ -57,13 +73,13 @@ RSpec.describe Authorizy::Core, '#access?' do
   context 'when cop responds to controller' do
     subject(:authorizy) { described_class.new(current_user, params, session) }
 
-    let!(:cop) { instance_double('Authorizy.config.cop') }
+    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { 'action' => 'create', 'controller' => 'match' } }
     let!(:session) { {} }
 
     before do
-      allow(Authorizy.config.cop).to receive(:new)
+      allow(Authorizy::BaseCop).to receive(:new)
         .with(current_user, params, session, 'match', 'create')
         .and_return(cop)
 
@@ -79,7 +95,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     end
 
     context 'when cop releases the access' do
-      it 'skips session and user permission return true to the access' do
+      it 'skips session and user permission returning true to the access' do
         allow(cop).to receive(:public_send).with('match').and_return(true)
 
         expect(authorizy.access?).to be(true)
