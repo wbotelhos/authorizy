@@ -2,13 +2,11 @@
 
 module Authorizy
   class Core
-    def initialize(user, params, session, controller: params['controller'], action: params['action'], cop:)
-      @action       = action.to_s
-      @controller   = controller.to_s
-      @cop          = cop
-      @params       = params
-      @session      = session
-      @user         = user
+    def initialize(user, params, session, cop:)
+      @cop     = cop
+      @params  = params
+      @session = session
+      @user    = user
     end
 
     def access?
@@ -31,8 +29,16 @@ module Authorizy
 
     private
 
+    def action
+      @params['action'].to_s
+    end
+
+    def controller
+      @params['controller'].to_s
+    end
+
     def cop_controller
-      @controller.sub('/', '__')
+      controller.sub('/', '__')
     end
 
     def expand(permissions)
@@ -46,7 +52,7 @@ module Authorizy
     end
 
     def route_match?(tuple)
-      tuple[0] == @controller && tuple[1] == @action
+      tuple[0] == controller && tuple[1] == action
     end
 
     def user_permissions

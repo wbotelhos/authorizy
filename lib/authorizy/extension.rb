@@ -17,16 +17,11 @@ module Authorizy
         redirect_to authorizy_config.redirect_url.call(self), info: info
       end
 
-      # TODO: mutate the params with args
       def authorizy?(controller, action)
-        authorizy_core.new(
-          authorizy_user,
-          params,
-          session,
-          controller: controller,
-          action: action,
-          cop: authorizy_cop
-        ).access?
+        params['controller'] = controller
+        params['action'] = action
+
+        authorizy_core.new(authorizy_user, params, session, cop: authorizy_cop).access?
       end
 
       private

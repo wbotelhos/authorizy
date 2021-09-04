@@ -98,29 +98,6 @@ RSpec.describe Authorizy::Core, '#access?' do
     end
   end
 
-  context 'when controller is given' do
-    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
-    let!(:current_user) { User.new }
-    let!(:params) { { 'action' => 'action' } }
-    let!(:session) { { 'permissions' => [['controller', 'action']] } }
-
-    it 'uses the given controller over the one on params' do
-      expect(described_class.new(current_user, params, session, controller: 'controller', cop: cop).access?).to be(true)
-    end
-  end
-
-  context 'when action is given' do
-    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
-
-    let!(:current_user) { User.new }
-    let!(:params) { { 'controller' => 'controller' } }
-    let!(:session) { { 'permissions' => [['controller', 'action']] } }
-
-    it 'uses the given action over the one on params' do
-      expect(described_class.new(current_user, params, session, action: 'action', cop: cop).access?).to be(true)
-    end
-  end
-
   context 'when user has the controller permission but not action' do
     let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
     let!(:current_user) { User.new }
