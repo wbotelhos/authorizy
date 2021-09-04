@@ -11,7 +11,6 @@ module Authorizy
 
     def access?
       return false if @user.blank?
-
       return true if @cop.access?
 
       session_granted = session_permissions.any? { |tuple| route_match?(tuple) }

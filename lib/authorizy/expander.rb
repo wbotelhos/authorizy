@@ -8,20 +8,23 @@ module Authorizy
       result = {}
 
       permissions.each do |permission|
-        controller, action = permission[0].to_s, permission[1].to_s
+        controller = permission[0].to_s
+        action = permission[1].to_s
 
         result["#{controller}##{action}"] = [controller, action]
 
         if (items = controller_dependency(controller, action))
-          items.each { |c, a| result["#{c}##{a}"] = [c, a] }
+          items.each do |controller_item, action_item|
+            result["#{controller_item}##{action_item}"] = [controller_item, action_item]
+          end
         end
 
         actions = [default_aliases[action]].flatten.compact
 
         next if actions.blank?
 
-        actions.each do |action|
-          result["#{controller}##{action}"] = ['controller', action.to_s]
+        actions.each do |action_item|
+          result["#{controller}##{action_item}"] = ['controller', action_item.to_s]
         end
       end
 
