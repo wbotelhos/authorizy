@@ -11,15 +11,10 @@ module Authorizy
 
     def access?
       return false if @user.blank?
-      return true if @cop.access?
 
-      session_granted = session_permissions.any? { |tuple| route_match?(tuple) }
-
-      return true if session_granted
-
-      user_granted = user_permissions.any? { |tuple| route_match?(tuple) }
-
-      return true if user_granted
+      return true if @cop.access? ||
+                     session_permissions.any? { |tuple| route_match?(tuple) } ||
+                     user_permissions.any? { |tuple| route_match?(tuple) }
 
       return @cop.public_send(cop_controller) if @cop.respond_to?(cop_controller)
 
