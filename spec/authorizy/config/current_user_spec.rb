@@ -23,7 +23,7 @@ RSpec.describe Authorizy::Config, '#current_user' do
 
   context 'when uses custom value' do
     it 'executes what you want' do
-      config.current_user = -> (context) { context[:value] }
+      config.current_user = ->(context) { context[:value] }
 
       expect(config.current_user.call({ value: 'value' })).to eq('value')
     end

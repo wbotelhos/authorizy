@@ -16,7 +16,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     let!(:cop) { OpenStruct.new(access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { 'controller' => 'controller', 'action' => 'action' } }
-    let!(:session) { { 'permissions' => [['controller', 'action']] } }
+    let!(:session) { { 'permissions' => [%w[controller action]] } }
 
     it 'is authorized based in session permissions' do
       expect(described_class.new(current_user, params, session, cop: cop).access?).to be(true)
@@ -25,7 +25,7 @@ RSpec.describe Authorizy::Core, '#access?' do
 
   context 'when permissions is in the current user' do
     let!(:cop) { OpenStruct.new(access?: false) }
-    let!(:current_user) { User.new(authorizy: { permissions: [['controller', 'create']] }) }
+    let!(:current_user) { User.new(authorizy: { permissions: [%w[controller create]] }) }
     let!(:params) { { 'controller' => 'controller', 'action' => 'create' } }
     let!(:session) { {} }
 
@@ -102,7 +102,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { 'controller' => 'controller', 'action' => 'action' } }
-    let!(:session) { { 'permissions' => [['controller', 'miss']] } }
+    let!(:session) { { 'permissions' => [%w[controller miss]] } }
 
     it 'is not authorized' do
       expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
@@ -113,7 +113,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { 'controller' => 'controller', 'action' => 'action' } }
-    let!(:session) { { 'permissions' => [['miss', 'action']] } }
+    let!(:session) { { 'permissions' => [%w[miss action]] } }
 
     it 'is not authorized' do
       expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)

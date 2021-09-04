@@ -15,17 +15,17 @@ RSpec.describe Authorizy::Expander, '#expand' do
     context 'when data is symbol' do
       let(:permissions) do
         [
-          [:controller, :create],
-          [:controller, :update],
+          %i[controller create],
+          %i[controller update],
         ]
       end
 
       it 'maps the default actions aliases' do
         expect(expander.expand(permissions)).to match_array [
-          ['controller', 'create'],
-          ['controller', 'edit'],
-          ['controller', 'new'],
-          ['controller', 'update'],
+          %w[controller create],
+          %w[controller edit],
+          %w[controller new],
+          %w[controller update],
         ]
       end
     end
@@ -33,17 +33,17 @@ RSpec.describe Authorizy::Expander, '#expand' do
     context 'when data is string' do
       let(:permissions) do
         [
-          ['controller', 'create'],
-          ['controller', 'update'],
+          %w[controller create],
+          %w[controller update],
         ]
       end
 
       it 'maps the default actions aliases' do
         expect(expander.expand(permissions)).to match_array [
-          ['controller', 'create'],
-          ['controller', 'edit'],
-          ['controller', 'new'],
-          ['controller', 'update'],
+          %w[controller create],
+          %w[controller edit],
+          %w[controller new],
+          %w[controller update],
         ]
       end
     end
@@ -51,28 +51,28 @@ RSpec.describe Authorizy::Expander, '#expand' do
 
   context 'when a dependencies is given' do
     context 'when keys and values are strings' do
-      let(:dependencies) { { 'controller' => { 'action' => [['controller2', 'action2']] } } }
-      let!(:permissions) { [['controller', 'action']] }
+      let(:dependencies) { { 'controller' => { 'action' => [%w[controller2 action2]] } } }
+      let!(:permissions) { [%w[controller action]] }
 
       it 'addes the dependencies permissions' do
         config_mock(dependencies: dependencies) do
           expect(expander.expand(permissions)).to match_array [
-            ['controller', 'action'],
-            ['controller2', 'action2'],
+            %w[controller action],
+            %w[controller2 action2],
           ]
         end
       end
     end
 
     context 'when keys and values are symbol' do
-      let(:dependencies) { { controller: { action: [[:controller2, :action2]] } } }
-      let!(:permissions) { [['controller', 'action']] }
+      let(:dependencies) { { controller: { action: [%i[controller2 action2]] } } }
+      let!(:permissions) { [%w[controller action]] }
 
       it 'addes the dependencies permissions' do
         config_mock(dependencies: dependencies) do
           expect(expander.expand(permissions)).to match_array [
-            ['controller', 'action'],
-            ['controller2', 'action2'],
+            %w[controller action],
+            %w[controller2 action2],
           ]
         end
       end
@@ -80,7 +80,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
   end
 
   context 'when aliases is given' do
-    let!(:permissions) { [['controller', 'action']] }
+    let!(:permissions) { [%w[controller action]] }
 
     context 'when key and values are strings' do
       let(:aliases) { { 'action' => 'action2' } }
@@ -88,8 +88,8 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'maps the action with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            ['controller', 'action'],
-            ['controller', 'action2'],
+            %w[controller action],
+            %w[controller action2],
           ]
         end
       end
@@ -101,8 +101,8 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'maps the action with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            ['controller', 'action'],
-            ['controller', 'action2'],
+            %w[controller action],
+            %w[controller action2],
           ]
         end
       end
@@ -114,9 +114,9 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'maps the actions with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            ['controller', 'action'],
-            ['controller', 'action2'],
-            ['controller', 'action3'],
+            %w[controller action],
+            %w[controller action2],
+            %w[controller action3],
           ]
         end
       end
@@ -128,9 +128,9 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'maps the actions with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            ['controller', 'action'],
-            ['controller', 'action2'],
-            ['controller', 'action3'],
+            %w[controller action],
+            %w[controller action2],
+            %w[controller action3],
           ]
         end
       end

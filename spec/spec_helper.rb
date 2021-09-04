@@ -12,9 +12,9 @@ def config_mock(aliases: nil, cop: nil, current_user: nil, dependencies: nil, re
   Authorizy.configure do |config|
     config.aliases      = aliases                        if aliases
     config.cop          = cop                            if cop
-    config.current_user = -> (_context) { current_user } if current_user
-    config.dependencies = dependencies                   if dependencies
-    config.redirect_url = -> (_context) { redirect_url } if redirect_url
+    config.current_user = ->(_context) { current_user } if current_user
+    config.dependencies = dependencies if dependencies
+    config.redirect_url = ->(_context) { redirect_url } if redirect_url
   end
 
   yield

@@ -6,7 +6,7 @@ require 'support/models/user'
 ActiveRecord::Base.establish_connection(
   adapter:  'postgresql',
   host:     'localhost',
-  username: 'postgres',
+  username: 'postgres'
 )
 
 ActiveRecord::Base.connection.execute('DROP DATABASE IF EXISTS authorizy_test;')
