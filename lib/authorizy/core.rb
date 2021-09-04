@@ -2,37 +2,34 @@
 
 module Authorizy
   class Core
-    def initialize(current_user, params, session, controller: params['controller'], action: params['action'])
+    def initialize(user, params, session, controller: params['controller'], action: params['action'], cop:)
       @action       = action.to_s
       @controller   = controller.to_s
-      @current_user = current_user
+      @cop          = cop
       @params       = params
       @session      = session
+      @user         = user
     end
 
     def access?
-      return false if @current_user.blank?
+      return false if @user.blank?
 
-      return true if cop.access?
+      return true if @cop.access?
 
-      session_granted = session_permissions.map(&:stringify_keys).any? { |item| route_match?(item) }
+      session_granted = session_permissions.any? { |tuple| route_match?(tuple) }
 
       return true if session_granted
 
-      current_user_granted = current_user_permissions.map(&:stringify_keys).any? { |item| route_match?(item) }
+      user_granted = user_permissions.any? { |tuple| route_match?(tuple) }
 
-      return true if current_user_granted
+      return true if user_granted
 
-      return cop.public_send(cop_controller) if cop.respond_to?(cop_controller)
+      return @cop.public_send(cop_controller) if @cop.respond_to?(cop_controller)
 
       false
     end
 
     private
-
-    def cop
-      Authorizy.config.cop.new(@current_user, @params, @session, @controller, @action)
-    end
 
     def cop_controller
       @controller.sub('/', '__')
@@ -45,15 +42,15 @@ module Authorizy
     end
 
     def session_permissions
-      expand([@session['permissions']].flatten.compact)
+      expand(@session['permissions'])
     end
 
-    def current_user_permissions
-      expand(@current_user.authorizy.try(:[], 'permissions'))
+    def route_match?(tuple)
+      tuple[0] == @controller && tuple[1] == @action
     end
 
-    def route_match?(item)
-      item['controller'].to_s == @controller && item['action'].to_s == @action
+    def user_permissions
+      expand(@user.authorizy.try(:[], 'permissions'))
     end
   end
 end

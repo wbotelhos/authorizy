@@ -8,24 +8,24 @@ module Authorizy
       result = {}
 
       permissions.each do |permission|
-        item = permission.stringify_keys.transform_values(&:to_s)
+        controller, action = permission[0].to_s, permission[1].to_s
 
-        result[key_for(item)] = item
+        result["#{controller}##{action}"] = [controller, action]
 
-        if (items = controller_dependency(item))
-          items.each { |data| result[key_for(data)] = data }
+        if (items = controller_dependency(controller, action))
+          items.each { |c, a| result["#{c}##{a}"] = [c, a] }
         end
 
-        actions = [default_aliases[item['action']]].flatten.compact
+        actions = [default_aliases[action]].flatten.compact
 
         next if actions.blank?
 
         actions.each do |action|
-          result[key_for(item, action: action)] = { 'action' => action.to_s, 'controller' => item['controller'].to_s }
+          result["#{controller}##{action}"] = ['controller', action.to_s]
         end
       end
 
-      result.values
+      result.values # TODO: garantir o uniq
     end
 
     private
@@ -34,11 +34,11 @@ module Authorizy
       Authorizy.config.aliases.stringify_keys
     end
 
-    def controller_dependency(item)
-      return if (actions = dependencies[item['controller']]).blank?
-      return if (permissions = actions[item['action']]).blank?
+    def controller_dependency(controller, action)
+      return if (actions = dependencies[controller]).blank?
+      return if (permissions = actions[action]).blank?
 
-      permissions.map { |permission| permission.transform_values(&:to_s) }
+      permissions.map { |c, a| [c.to_s, a.to_s] }
     end
 
     def default_aliases
@@ -52,10 +52,6 @@ module Authorizy
 
     def dependencies
       Authorizy.config.dependencies.deep_stringify_keys
-    end
-
-    def key_for(item, action: nil)
-      "#{item['controller']}##{action || item['action']}"
     end
   end
 end

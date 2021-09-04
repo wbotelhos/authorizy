@@ -15,19 +15,19 @@ RSpec.describe Authorizy::Expander, '#expand' do
     context 'when data is symbol' do
       let(:permissions) do
         [
-          { action: :create, controller: :controller },
-          { action: :edit, controller: :controller },
-          { action: :new, controller: :controller },
-          { action: :update, controller: :controller },
+          [:controller, :create],
+          [:controller, :edit],
+          [:controller, :new],
+          [:controller, :update],
         ]
       end
 
       it 'mappes the default actions aliases' do
         expect(expander.expand(permissions)).to match_array [
-          { 'action' => 'create', 'controller' => 'controller' },
-          { 'action' => 'edit',   'controller' => 'controller' },
-          { 'action' => 'new',    'controller' => 'controller' },
-          { 'action' => 'update', 'controller' => 'controller' },
+          ['controller', 'create'],
+          ['controller', 'edit'],
+          ['controller', 'new'],
+          ['controller', 'update'],
         ]
       end
     end
@@ -35,19 +35,19 @@ RSpec.describe Authorizy::Expander, '#expand' do
     context 'when data is string' do
       let(:permissions) do
         [
-          { 'action' => 'create', 'controller' => 'controller' },
-          { 'action' => 'edit', 'controller' => 'controller' },
-          { 'action' => 'new', 'controller' => 'controller' },
-          { 'action' => 'update', 'controller' => 'controller' },
+          ['controller', 'create'],
+          ['controller', 'edit'],
+          ['controller', 'new'],
+          ['controller', 'update'],
         ]
       end
 
       it 'mappes the default actions aliases' do
         expect(expander.expand(permissions)).to match_array [
-          { 'action' => 'create', 'controller' => 'controller' },
-          { 'action' => 'edit',   'controller' => 'controller' },
-          { 'action' => 'new',    'controller' => 'controller' },
-          { 'action' => 'update', 'controller' => 'controller' },
+          ['controller', 'create'],
+          ['controller', 'edit'],
+          ['controller', 'new'],
+          ['controller', 'update'],
         ]
       end
     end
@@ -55,28 +55,28 @@ RSpec.describe Authorizy::Expander, '#expand' do
 
   context 'when a dependencies is given' do
     context 'when keys and values are strings' do
-      let(:dependencies) { { 'controller' => { 'action' => [{ 'action' => 'action2', 'controller' => 'controller2' }] } } }
-      let!(:permissions) { [{ 'action' => 'action', 'controller' => 'controller' }] }
+      let(:dependencies) { { 'controller' => { 'action' => [['controller2', 'action2']] } } }
+      let!(:permissions) { [['controller', 'action']] }
 
       it 'addes the dependencies permissions' do
         config_mock(dependencies: dependencies) do
           expect(expander.expand(permissions)).to match_array [
-            { 'action' => 'action', 'controller' => 'controller' },
-            { 'action' => 'action2', 'controller' => 'controller2' },
+            ['controller', 'action'],
+            ['controller2', 'action2'],
           ]
         end
       end
     end
 
     context 'when keys and values are symbol' do
-      let(:dependencies) { { controller: { action: [{ action: :action2, controller: :controller2 }] } } }
-      let!(:permissions) { [{ 'action' => 'action', 'controller' => 'controller' }] }
+      let(:dependencies) { { controller: { action: [[:controller2, :action2]] } } }
+      let!(:permissions) { [['controller', 'action']] }
 
       it 'addes the dependencies permissions' do
         config_mock(dependencies: dependencies) do
           expect(expander.expand(permissions)).to match_array [
-            { 'action' => 'action', 'controller' => 'controller' },
-            { 'action' => 'action2', 'controller' => 'controller2' },
+            ['controller', 'action'],
+            ['controller2', 'action2'],
           ]
         end
       end
@@ -85,7 +85,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
 
 
   context 'when aliases is given' do
-    let!(:permissions) { [{ 'action' => 'action', 'controller' => 'controller' }] }
+    let!(:permissions) { [['controller', 'action']] }
 
     context 'when key and values are strings' do
       let(:aliases) { { 'action' => 'action2' } }
@@ -93,8 +93,8 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'mappes the action with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            { 'action' => 'action', 'controller' => 'controller' },
-            { 'action' => 'action2', 'controller' => 'controller' },
+            ['controller', 'action'],
+            ['controller', 'action2'],
           ]
         end
       end
@@ -106,8 +106,8 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'mappes the action with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            { 'action' => 'action', 'controller' => 'controller' },
-            { 'action' => 'action2', 'controller' => 'controller' },
+            ['controller', 'action'],
+            ['controller', 'action2'],
           ]
         end
       end
@@ -119,9 +119,9 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'mappes the actions with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            { 'action' => 'action', 'controller' => 'controller' },
-            { 'action' => 'action2', 'controller' => 'controller' },
-            { 'action' => 'action3', 'controller' => 'controller' },
+            ['controller', 'action'],
+            ['controller', 'action2'],
+            ['controller', 'action3'],
           ]
         end
       end
@@ -133,9 +133,9 @@ RSpec.describe Authorizy::Expander, '#expand' do
       it 'mappes the actions with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
-            { 'action' => 'action', 'controller' => 'controller' },
-            { 'action' => 'action2', 'controller' => 'controller' },
-            { 'action' => 'action3', 'controller' => 'controller' },
+            ['controller', 'action'],
+            ['controller', 'action2'],
+            ['controller', 'action3'],
           ]
         end
       end

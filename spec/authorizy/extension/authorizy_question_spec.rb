@@ -12,18 +12,21 @@ RSpec.describe DummyController, '#authorizy?', type: :controller do
   end
 
   context 'when config returns current user' do
-    let!(:current_user) { User.new }
+    let!(:config) { Authorizy.config }
+    let!(:user) { User.new }
     let!(:parameters) { ActionController::Parameters.new }
+
+    before { allow(Authorizy).to receive(:config).and_return(config) }
 
     context 'when authorizy returns false' do
       let!(:authorizy) { instance_double('Authorizy::Core', access?: false) }
 
       it 'returns false' do
         allow(Authorizy::Core).to receive(:new)
-          .with(current_user, parameters, session, controller: 'controller', action: 'action')
+          .with(user, parameters, session, controller: 'controller', action: 'action', cop: config.cop)
           .and_return(authorizy)
 
-        config_mock(current_user: current_user) do
+        config_mock(current_user: user) do
           expect(controller.helpers.authorizy?('controller', 'action')).to be(false)
         end
       end
@@ -34,10 +37,10 @@ RSpec.describe DummyController, '#authorizy?', type: :controller do
 
       it 'returns true' do
         allow(Authorizy::Core).to receive(:new)
-          .with(current_user, parameters, session, controller: 'controller', action: 'action')
+          .with(user, parameters, session, controller: 'controller', action: 'action', cop: config.cop)
           .and_return(authorizy)
 
-        config_mock(current_user: current_user) do
+        config_mock(current_user: user) do
           expect(controller.helpers.authorizy?('controller', 'action')).to be(true)
         end
       end
