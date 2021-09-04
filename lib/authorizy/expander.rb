@@ -24,7 +24,7 @@ module Authorizy
         next if actions.blank?
 
         actions.each do |action_item|
-          result["#{controller}##{action_item}"] = ['controller', action_item.to_s]
+          result["#{controller}##{action_item}"] = [controller, action_item.to_s]
         end
       end
 
