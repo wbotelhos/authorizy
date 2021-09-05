@@ -25,18 +25,20 @@ RSpec::Matchers.define :be_authorized do |controller, action, params: {}, sessio
 
   private
 
-  def access?(user, parameters, session)
-    Authorizy::Core.new(user, parameters, session).access?
+  def access?(user, params, session)
+    cop = Authorizy.config.cop.new(user, params, session)
+
+    Authorizy::Core.new(user, params, session, cop: cop).access?
   end
 
   def maybe_params_or_session(message, params, session)
-    message += " with params: #{params}" if params.present?
-    message += " with session: #{session}" if session.present?
+    message += ", params: #{params}" if params.present?
+    message += ", session: #{session}" if session.present?
 
     message
   end
 
   def data
-    'controller: ' # {expected[0]}", action: "#{expected[1]}")
+    %(controller: "#{expected[0]}", action: "#{expected[1]}")
   end
 end

@@ -39,7 +39,7 @@ module Authorizy
       end
 
       def authorizy_cop
-        authorizy_config.cop.new(authorizy_user, params, session, params['controller'], params['action'])
+        authorizy_config.cop.new(authorizy_user, params, session)
       end
     end
   end

@@ -71,7 +71,7 @@ RSpec.describe Authorizy::Core, '#access?' do
           def admin__controller
             false
           end
-        end.new(current_user, params, session, params['controller'], params['action'])
+        end.new(current_user, params, session)
       end
 
       it 'is not authorized by cop' do
@@ -89,7 +89,7 @@ RSpec.describe Authorizy::Core, '#access?' do
           def admin__controller
             true
           end
-        end.new(current_user, params, session, params['controller'], params['action'])
+        end.new(current_user, params, session)
       end
 
       it 'is authorized by the cop' do
