@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Authorizy::Config, '#redirect_url' do
-  subject(:config) { described_class.new }
+  let!(:config) { described_class.new }
 
   context 'when uses default value' do
     context 'when context responds to root_url' do
       let!(:context) { OpenStruct.new(root_url: '/root') }
 
       it 'is called' do
-        expect(subject.redirect_url.call(context)).to eq('/root')
+        expect(config.redirect_url.call(context)).to eq('/root')
       end
     end
 
@@ -16,7 +16,7 @@ RSpec.describe Authorizy::Config, '#redirect_url' do
       let!(:context) { 'context' }
 
       it 'returns just a slash' do
-        expect(subject.redirect_url.call(context)).to eq('/')
+        expect(config.redirect_url.call(context)).to eq('/')
       end
     end
   end

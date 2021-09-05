@@ -2,6 +2,6 @@
 
 RSpec.describe Authorizy::Config do
   it 'starts with a default cop' do
-    expect(subject.cop).to eq(Authorizy::BaseCop)
+    expect(described_class.new.cop).to eq(Authorizy::BaseCop)
   end
 end

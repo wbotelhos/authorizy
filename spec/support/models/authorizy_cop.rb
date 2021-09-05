@@ -9,23 +9,23 @@ class AuthorizyCop < Authorizy::BaseCop
     params[:access] == 'true'
   end
 
-  def get_action
+  def fetch_action
     action
   end
 
-  def get_controller
+  def fetch_controller
     controller
   end
 
-  def get_current_user
+  def fetch_current_user
     current_user
   end
 
-  def get_params
+  def fetch_params
     params
   end
 
-  def get_session
+  def fetch_session
     session
   end
 end

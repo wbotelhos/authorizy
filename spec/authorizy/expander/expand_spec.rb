@@ -51,28 +51,28 @@ RSpec.describe Authorizy::Expander, '#expand' do
 
   context 'when a dependencies is given' do
     context 'when keys and values are strings' do
-      let(:dependencies) { { 'controller' => { 'action' => [%w[controller2 action2]] } } }
+      let(:dependencies) { { 'controller' => { 'action' => [%w[controller_2 action_2]] } } }
       let!(:permissions) { [%w[controller action]] }
 
       it 'addes the dependencies permissions' do
         config_mock(dependencies: dependencies) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
-            %w[controller2 action2],
+            %w[controller_2 action_2],
           ]
         end
       end
     end
 
     context 'when keys and values are symbol' do
-      let(:dependencies) { { controller: { action: [%i[controller2 action2]] } } }
+      let(:dependencies) { { controller: { action: [%i[controller_2 action_2]] } } }
       let!(:permissions) { [%w[controller action]] }
 
       it 'addes the dependencies permissions' do
         config_mock(dependencies: dependencies) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
-            %w[controller2 action2],
+            %w[controller_2 action_2],
           ]
         end
       end
@@ -83,54 +83,54 @@ RSpec.describe Authorizy::Expander, '#expand' do
     let!(:permissions) { [%w[controller action]] }
 
     context 'when key and values are strings' do
-      let(:aliases) { { 'action' => 'action2' } }
+      let(:aliases) { { 'action' => 'action_2' } }
 
       it 'maps the action with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
-            %w[controller action2],
+            %w[controller action_2],
           ]
         end
       end
     end
 
     context 'when key and values are symbols' do
-      let(:aliases) { { action: :action2 } }
+      let(:aliases) { { action: :action_2 } }
 
       it 'maps the action with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
-            %w[controller action2],
+            %w[controller action_2],
           ]
         end
       end
     end
 
     context 'when key and values are array of strings' do
-      let(:aliases) { { action: %w[action2 action3] } }
+      let(:aliases) { { action: %w[action_2 action_3] } }
 
       it 'maps the actions with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
-            %w[controller action2],
-            %w[controller action3],
+            %w[controller action_2],
+            %w[controller action_3],
           ]
         end
       end
     end
 
     context 'when key and values are array of symbols' do
-      let(:aliases) { { action: %i[action2 action3] } }
+      let(:aliases) { { action: %i[action_2 action_3] } }
 
       it 'maps the actions with the current controller' do
         config_mock(aliases: aliases) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
-            %w[controller action2],
-            %w[controller action3],
+            %w[controller action_2],
+            %w[controller action_3],
           ]
         end
       end

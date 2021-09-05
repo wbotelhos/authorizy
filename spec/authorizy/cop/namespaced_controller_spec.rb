@@ -5,7 +5,6 @@ require 'support/models/empty_cop'
 require 'support/controllers/admin/dummy_controller'
 
 RSpec.describe Admin::DummyController, '#authorizy', type: :controller do
-  let!(:parameters) { ActionController::Parameters.new(key: 'value', controller: 'admin/users', action: 'action') }
   let!(:user) { User.new }
 
   context 'when cop responds to the controller name' do
@@ -30,7 +29,7 @@ RSpec.describe Admin::DummyController, '#authorizy', type: :controller do
     end
   end
 
-  context 'when cop responds to the controller name' do
+  context 'when cop does not respond to the controller name' do
     it 'denies the access' do
       config_mock(cop: EmptyCop, current_user: user) do
         get :action

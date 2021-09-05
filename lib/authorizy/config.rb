@@ -7,9 +7,9 @@ module Authorizy
     def initialize
       @aliases      = {}
       @cop          = Authorizy::BaseCop
-      @current_user = -> (context) { context.respond_to?(:current_user) ? context.current_user : nil }
+      @current_user = ->(context) { context.respond_to?(:current_user) ? context.current_user : nil }
       @dependencies = {}
-      @redirect_url = -> (context) { context.respond_to?(:root_url) ? context.root_url : '/' }
+      @redirect_url = ->(context) { context.respond_to?(:root_url) ? context.root_url : '/' }
     end
   end
 end
