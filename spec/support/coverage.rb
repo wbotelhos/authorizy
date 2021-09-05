@@ -9,6 +9,10 @@ if ENV['COVERAGE'] == 'true'
   SimpleCov.minimum_coverage(ENV.fetch('MINIMUM_COVERAGE', 80).to_i)
 
   SimpleCov.start('rails') do
-    add_filter('vendor')
+    add_filter [
+      '/lib/generators',
+      '/vendor',
+      '/lib/authorizy/version.rb',
+    ]
   end
 end
