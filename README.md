@@ -55,8 +55,8 @@ The column `authorizy` is a JSON column that has a key called `permission` with 
 ```ruby
 {
   permissions: [
-    { controller: :users, action: :create },
-    { controller: :users, action: :update },
+    [users, :create],
+    [users, :update],
   }
 }
 ```
@@ -93,8 +93,8 @@ Authorizy.configure do |config|
   config.dependencies = {
     payments: {
       index: [
-        { controller: 'system/users', action: :index },
-        { controller: 'system/enrollments', action: :index },
+        ['system/users', :index],
+        ['system/enrollments', :index],
       ]
     }
   }
@@ -105,7 +105,7 @@ So now if a have the permission `payments#index` I'll receive more two permissio
 
 ### Cop
 
-Sometimes we need to allow access in runtime because the permission will depend on the request data and/or some dynamic logic. For this you can create a *Cop* class, the inherit from `Authorizy::BaseCop`, to allow it based on logic. It works like a [Interceptor](https://en.wikipedia.org/wiki/Interceptor_pattern).
+Sometimes we need to allow access in runtime because the permission will depend on the request data and/or some dynamic logic. For this you can create a *Cop* class, that inherits from `Authorizy::BaseCop`, to allow it based on logic. It works like a [Interceptor](https://en.wikipedia.org/wiki/Interceptor_pattern).
 
 First, you need to configure your cop:
 
@@ -130,12 +130,23 @@ end
 ```
 
 As you can see, you have access to a couple of variables: `action`, `controller`, `current_user`, `params`, and `session`.
+When you return `false`, the authorization will be denied, when you return `true` your access will be allowed.
 
 If your controller has a namespace, just use `__` to separate the modules name:
 
 ```ruby
 class AuthorizyCop < Authorizy::BaseCop
   def admin__users
+  end
+end
+```
+
+If you want to intercept all request as the first Authorizy check, you can override the `access?` method:
+
+```ruby
+class AuthorizyCop < Authorizy::BaseCop
+  def access?
+    return true if current_user.admin?
   end
 end
 ```
@@ -187,4 +198,75 @@ Using on jBuilder view:
 
 ```ruby
 json.create_link new_users_url if authorizy?(:users, :create)
+```
+
+# Specs
+
+To test some routes you'll need to give or not permission to the user, for that you have to ways, where the first is give permission to the user via session:
+
+```ruby
+before do
+  sign_in(current_user)
+
+  session[:permissions] = [[:users, :create]]
+end
+```
+
+Or you can put the permission directly in the current user:
+
+```ruby
+before do
+  sign_in(current_user)
+
+  current_user.update(permissions: [[:users, :create]])
+end
+```
+
+## Checks
+
+We have a couple of check, here is the order:
+
+1. `Authorizy::BaseCop#access?`;
+2. `session[:permissions]`;
+3. `current_user.authorizy['permissions']`;
+4. `Authorizy::BaseCop#controller_name`;
+
+## Performance
+
+If you have few permissions, you can save the permissions in the session and avoid hit database many times, but if you have a couple of them, maybe it's a good idea save it in some place like [Redis](https://redis.io).
+
+## Management
+
+It's a good idea you keep your permissions in the database, so the customer can change it dynamic. You can load all permissions when the user is logged and cache it later. For cache expiration, you can trigger a refresh everytime that the permissions change.
+
+## Database Structure
+
+Inside database you can use the following relation to dynamicly change your permissions:
+
+```ruby
+plans -> plans_permissions <- permissions
+                |
+                v
+        role_plan_permissions
+                ^
+                |
+              roles
+```
+
+## RSpec
+
+You can test you app passing through all authorizy layers:
+
+```ruby
+user = User.create!(permission: { permissions: [[:users, :create]] })
+
+expect(user).to be_authorized(:users, :create)
+```
+
+Or make sure the user does not have access:
+
+```ruby
+user = User.create!(permission: {})
+
+expect(user).not_to be_authorized(:users, :create)
 ```
