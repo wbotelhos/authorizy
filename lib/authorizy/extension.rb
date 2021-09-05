@@ -12,7 +12,7 @@ module Authorizy
 
         info = I18n.t('authorizy.denied', controller: params[:controller], action: params[:action])
 
-        return render(json: { message: info }, status: 422) if request.xhr?
+        return render(json: { message: info }, status: 401) if request.xhr?
 
         redirect_to authorizy_config.redirect_url.call(self), info: info
       end

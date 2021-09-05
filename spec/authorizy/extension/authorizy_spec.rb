@@ -51,7 +51,7 @@ RSpec.describe DummyController, '#authorizy', type: :controller do
         get :action, xhr: true, params: { key: 'value' }
 
         expect(response.body).to   eq('{"message":"Action denied for dummy#action"}')
-        expect(response.status).to be(422)
+        expect(response.status).to be(401)
       end
     end
 
