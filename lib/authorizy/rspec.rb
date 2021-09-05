@@ -4,13 +4,13 @@ require 'rspec/expectations'
 
 RSpec::Matchers.define :be_authorized do |controller, action, params: {}, session: {}|
   match do |user|
-    parameters = params.stringify_keys.merge('controller' => controller, 'action' => action)
+    parameters = params.merge(controller: controller, action: action)
 
     access?(user, parameters, session)
   end
 
   match_when_negated do |user|
-    parameters = params.stringify_keys.merge('controller' => controller, 'action' => action)
+    parameters = params.merge(controller: controller, action: action)
 
     !access?(user, parameters, session)
   end

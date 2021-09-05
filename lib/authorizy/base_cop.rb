@@ -3,8 +3,8 @@
 module Authorizy
   class BaseCop
     def initialize(current_user, params, session)
-      @action       = params['action'].to_s
-      @controller   = params['controller'].to_s
+      @action       = params[:action].to_s
+      @controller   = params[:controller].to_s
       @current_user = current_user
       @params       = params
       @session      = session

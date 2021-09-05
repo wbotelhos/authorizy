@@ -24,11 +24,11 @@ module Authorizy
     private
 
     def action
-      @params['action'].to_s
+      @params[:action].to_s
     end
 
     def controller
-      @params['controller'].to_s
+      @params[:controller].to_s
     end
 
     def cop_controller
@@ -42,7 +42,7 @@ module Authorizy
     end
 
     def session_permissions
-      expand(@session['permissions'])
+      expand(@session[:permissions])
     end
 
     def route_match?(tuple)
