@@ -1,3 +1,9 @@
+# v0.2.1
+
+## Fixes
+
+- Returns `401` status code when user has no authorization on a XHR request;
+
 # v0.2.0
 
 ## Break Changes
