@@ -16,7 +16,7 @@ module Authorizy
                      session_permissions.any? { |tuple| route_match?(tuple) } ||
                      user_permissions.any? { |tuple| route_match?(tuple) }
 
-      return @cop.public_send(cop_controller) if @cop.respond_to?(cop_controller)
+      return @cop.public_send(cop_controller) == true if @cop.respond_to?(cop_controller)
 
       false
     end

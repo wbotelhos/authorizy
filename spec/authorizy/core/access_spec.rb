@@ -85,6 +85,76 @@ RSpec.describe Authorizy::Core, '#access?' do
         expect(described_class.new(current_user, params, session, cop: cop).access?).to be(true)
       end
     end
+
+    context 'when cop return nil' do
+      let!(:cop) do
+        Class.new(Authorizy::BaseCop) do
+          def access?
+            false
+          end
+
+          def admin__controller
+            nil
+          end
+        end.new(current_user, params, session)
+      end
+
+      it 'is converted to false' do
+        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      end
+    end
+
+    context 'when cop return empty' do
+      let!(:cop) do
+        Class.new(Authorizy::BaseCop) do
+          def access?
+            false
+          end
+
+          def admin__controller
+            ''
+          end
+        end.new(current_user, params, session)
+      end
+
+      it 'is converted to false' do
+        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      end
+    end
+
+    context 'when cop return nothing' do
+      let!(:cop) do
+        Class.new(Authorizy::BaseCop) do
+          def access?
+            false
+          end
+
+          def admin__controller; end
+        end.new(current_user, params, session)
+      end
+
+      it 'is converted to false' do
+        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      end
+    end
+
+    context 'when cop return true as string' do
+      let!(:cop) do
+        Class.new(Authorizy::BaseCop) do
+          def access?
+            false
+          end
+
+          def admin__controller
+            'true'
+          end
+        end.new(current_user, params, session)
+      end
+
+      it 'is converted to false' do
+        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      end
+    end
   end
 
   context 'when user has the controller permission but not action' do
