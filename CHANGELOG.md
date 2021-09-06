@@ -1,3 +1,9 @@
+# v0.2.2
+
+## Fixes
+
+- When Cop returns anything different from `true` it is converted to `false`;
+
 # v0.2.1
 
 ## Fixes
