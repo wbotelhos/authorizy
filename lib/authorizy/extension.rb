@@ -8,38 +8,30 @@ module Authorizy
       helper_method(:authorizy?)
 
       def authorizy
-        return if authorizy_core.new(authorizy_user, params, session, cop: authorizy_cop).access?
+        return if Authorizy::Core.new(authorizy_user, params, session, cop: authorizy_cop).access?
 
         info = I18n.t('authorizy.denied', controller: params[:controller], action: params[:action])
 
         return render(json: { message: info }, status: 401) if request.xhr?
 
-        redirect_to authorizy_config.redirect_url.call(self), info: info
+        redirect_to Authorizy.config.redirect_url.call(self), info: info
       end
 
       def authorizy?(controller, action)
         params['controller'] = controller
         params['action'] = action
 
-        authorizy_core.new(authorizy_user, params, session, cop: authorizy_cop).access?
+        Authorizy::Core.new(authorizy_user, params, session, cop: authorizy_cop).access?
       end
 
       private
 
-      def authorizy_core
-        Authorizy::Core
-      end
-
       def authorizy_user
-        authorizy_config.current_user.call(self)
-      end
-
-      def authorizy_config
-        Authorizy.config
+        Authorizy.config.current_user.call(self)
       end
 
       def authorizy_cop
-        authorizy_config.cop.new(authorizy_user, params, session)
+        Authorizy.config.cop.new(authorizy_user, params, session)
       end
     end
   end
