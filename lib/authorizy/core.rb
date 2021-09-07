@@ -50,7 +50,7 @@ module Authorizy
     end
 
     def user_permissions
-      expand(@user.authorizy.try(:[], 'permissions'))
+      expand(Authorizy.config.field.call(@user).try(:[], 'permissions'))
     end
   end
 end
