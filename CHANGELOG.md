@@ -1,3 +1,9 @@
+# v0.3.0
+
+## Features
+
+- Added options `field` to customize how the authorizy field is fetched;
+
 # v0.2.2
 
 ## Fixes

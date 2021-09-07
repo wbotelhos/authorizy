@@ -84,25 +84,6 @@ Authorizy.configure do |config|
 end
 ```
 
-### Dependencies
-
-You can allow access to one or more controllers and actions based on your permissions. It'll consider not only the `action`, like [aliases](#aliases) but the controller either.
-
-```ruby
-Authorizy.configure do |config|
-  config.dependencies = {
-    payments: {
-      index: [
-        ['system/users', :index],
-        ['system/enrollments', :index],
-      ]
-    }
-  }
-end
-```
-
-So now if a have the permission `payments#index` I'll receive more two permissions: `users#index` and `enrollments#index`.
-
 ### Cop
 
 Sometimes we need to allow access in runtime because the permission will depend on the request data and/or some dynamic logic. For this you can create a *Cop* class, that inherits from `Authorizy::BaseCop`, to allow it based on logic. It works like a [Interceptor](https://en.wikipedia.org/wiki/Interceptor_pattern).
@@ -158,6 +139,35 @@ By default Authorizy fetch the current user from the variable `current_user`. Yo
 ```ruby
 Authorizy.configure do |config|
   config.current_user = -> (context) { context.current_person }
+end
+```
+
+### Dependencies
+
+You can allow access to one or more controllers and actions based on your permissions. It'll consider not only the `action`, like [aliases](#aliases) but the controller either.
+
+```ruby
+Authorizy.configure do |config|
+  config.dependencies = {
+    payments: {
+      index: [
+        ['system/users', :index],
+        ['system/enrollments', :index],
+      ]
+    }
+  }
+end
+```
+
+So now if a have the permission `payments#index` I'll receive more two permissions: `users#index` and `enrollments#index`.
+
+### Field
+
+By default the permissions are located inside the field called `authorizy` in the configured `current_user`. You can change how this field is fetched:
+
+```ruby
+Authorizy.configure do |config|
+  @field = ->(current_user) { current_user.profile.authorizy }
 end
 ```
 
