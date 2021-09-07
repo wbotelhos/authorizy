@@ -15,9 +15,7 @@ RSpec.describe Authorizy::Config, '#current_user' do
     context 'when context does not respond to current_user' do
       let!(:context) { 'context' }
 
-      it 'returns nil' do
-        expect(config.current_user.call(context)).to be(nil)
-      end
+      it { expect(config.current_user.call(context)).to be(nil) }
     end
   end
 
