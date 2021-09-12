@@ -1,3 +1,13 @@
+# v0.4.0
+
+## Fixes
+
+- Returns `403` status code, to represent recognized but not authorized, instead `401`;
+
+## Features
+
+- Added `denied` callback allowing a custom acess denied treatment;
+
 # v0.3.0
 
 ## Features

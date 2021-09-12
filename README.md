@@ -8,10 +8,6 @@
 
 A JSON based Authorization.
 
-##### Why not [cancancan](https://github.com/CanCanCommunity/cancancan)?
-
-I have been working with cancan/cancancan for years. Since the beginning with [database access](https://github.com/CanCanCommunity/cancancan/blob/develop/docs/Abilities-in-Database.md). After a while, I realised I built a couple of abstractions around `ability` class and suddenly migrated to JSON for better performance. As I need a full role admin I decided to start to extract this logic to a gem.
-
 ## Install
 
 Add the following code on your `Gemfile` and run `bundle install`:
@@ -140,6 +136,14 @@ By default Authorizy fetch the current user from the variable `current_user`. Yo
 Authorizy.configure do |config|
   config.current_user = -> (context) { context.current_person }
 end
+```
+
+### Denied
+
+When some access is denied, by default, Authorizy checks if it is a XHR request or not and then redirect or serializes a message with status code `403`. You can rescue it by yourself:
+
+```ruby
+config.denied = ->(context) { context.redirect_to(subscription_path, info: 'Subscription expired!') }
 ```
 
 ### Dependencies
