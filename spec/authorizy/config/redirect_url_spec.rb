@@ -23,9 +23,9 @@ RSpec.describe Authorizy::Config, '#redirect_url' do
 
   context 'when uses custom value' do
     it 'executes what you want' do
-      config.redirect_url = ->(context) { context[:value] }
+      config.redirect_url = ->(context) { context[:key] }
 
-      expect(config.redirect_url.call({ value: 'value' })).to eq('value')
+      expect(config.redirect_url.call({ key: :value })).to eq(:value)
     end
   end
 end

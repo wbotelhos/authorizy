@@ -9,13 +9,27 @@ Authorizy.configure do |config|
   # https://github.com/wbotelhos/authorizy#cop
   # config.cop = Authorizy::BaseCop
 
-  # The current user from we fetch the permissions
+  # The current user from where we fetch the permissions
   # https://github.com/wbotelhos/authorizy#current-user
   # config.current_user = -> (context) { context.respond_to?(:current_user) ? context.current_user : nil }
+
+  # Callback called when access is denied
+  # https://github.com/wbotelhos/authorizy#denied
+  # config.denied = lambda { |context|
+  #   info = I18n.t('authorizy.denied', controller: context.params[:controller], action: context.params[:action])
+
+  #   return context.render(json: { message: info }, status: 403) if context.request.xhr?
+
+  #   context.redirect_to(redirect_url.call(self), info: info)
+  # }
 
   # Inherited permissions from some other permission the user already has
   # https://github.com/wbotelhos/authorizy#dependencies
   # config.dependencies = {}
+
+  # Field used to fetch the Authorizy permissions
+  # https://github.com/wbotelhos/authorizy#field
+  # config.field = ->(current_user) { current_user.respond_to?(:authorizy) ? current_user.authorizy : {} }
 
   # URL to be redirect when user has no permission to access some resource
   # https://github.com/wbotelhos/authorizy#dependencies

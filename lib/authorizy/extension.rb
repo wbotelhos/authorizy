@@ -10,11 +10,7 @@ module Authorizy
       def authorizy
         return if Authorizy::Core.new(authorizy_user, params, session, cop: authorizy_cop).access?
 
-        info = I18n.t('authorizy.denied', controller: params[:controller], action: params[:action])
-
-        return render(json: { message: info }, status: 401) if request.xhr?
-
-        redirect_to Authorizy.config.redirect_url.call(self), info: info
+        Authorizy.config.denied.call(self)
       end
 
       def authorizy?(controller, action)
