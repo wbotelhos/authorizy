@@ -1,3 +1,9 @@
+# v0.4.1
+
+## Fixes
+
+- `redirect_url` was receiving the `denied` context instead of the controller's context;
+
 # v0.4.0
 
 ## Fixes
