@@ -25,16 +25,18 @@ RSpec.describe Authorizy::Config, '#denied' do
       let!(:context) do
         double('context',
           params: { controller: 'users', action: 'index' },
-          request: OpenStruct.new(xhr?: false)
+          request: OpenStruct.new(xhr?: false),
+          root_url: 'root_url'
         )
       end
 
-      it 'renders' do
+      it 'redirects' do
         allow(context).to receive(:redirect_to)
+        allow(context).to receive(:respond_to?).with(:root_url).and_return(true)
 
         config.denied.call(context)
 
-        expect(context).to have_received(:redirect_to).with('/', info: 'Action denied for users#index')
+        expect(context).to have_received(:redirect_to).with('root_url', info: 'Action denied for users#index')
       end
     end
   end

@@ -14,7 +14,7 @@ module Authorizy
 
         return context.render(json: { message: info }, status: 403) if context.request.xhr?
 
-        context.redirect_to(redirect_url.call(self), info: info)
+        context.redirect_to(redirect_url.call(context), info: info)
       }
 
       @dependencies = {}
