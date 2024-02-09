@@ -2,7 +2,7 @@
 
 module Authorizy
   class Core
-    def initialize(user, params, session, cop:)
+    def initialize(user, params, session, cop: nil)
       @cop     = cop
       @params  = params
       @session = session
@@ -12,13 +12,13 @@ module Authorizy
     def access?
       return false if @user.blank?
 
-      return true if @cop.access? ||
-                     session_permissions.any? { |tuple| route_match?(tuple) } ||
-                     user_permissions.any? { |tuple| route_match?(tuple) }
+      return true if @cop&.access?
+      return true if session_permissions.any? { |tuple| route_match?(tuple) }
+      return true if user_permissions.any? { |tuple| route_match?(tuple) }
 
-      return @cop.public_send(cop_controller) == true if @cop.respond_to?(cop_controller)
+      return false unless @cop.respond_to?(cop_controller)
 
-      false
+      @cop.public_send(cop_controller) == true
     end
 
     private
