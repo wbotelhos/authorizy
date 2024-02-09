@@ -19,7 +19,7 @@ module Authorizy
           end
         end
 
-        actions = [default_aliases[action]].flatten.compact
+        actions = [aliases[action]].flatten.compact
 
         next if actions.blank?
 
@@ -34,7 +34,12 @@ module Authorizy
     private
 
     def aliases
-      Authorizy.config.aliases.stringify_keys
+      default = {
+        'create' => 'new',
+        'update' => 'edit',
+      }
+
+      default.merge(Authorizy.config.aliases.stringify_keys)
     end
 
     def controller_dependency(controller, action)
@@ -42,15 +47,6 @@ module Authorizy
       return if (permissions = actions[action]).blank?
 
       permissions.map { |c, a| [c.to_s, a.to_s] }
-    end
-
-    def default_aliases
-      {
-        'create' => 'new',
-        'edit'   => 'update',
-        'new'    => 'create',
-        'update' => 'edit',
-      }.merge(aliases)
     end
 
     def dependencies
