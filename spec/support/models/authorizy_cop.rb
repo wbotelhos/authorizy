@@ -5,6 +5,10 @@ class AuthorizyCop < Authorizy::BaseCop
     params[:admin] == 'true'
   end
 
+  def custom_params
+    params[:custom] == 'true'
+  end
+
   def dummy
     params[:access] == 'true'
   end

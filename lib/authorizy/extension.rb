@@ -13,21 +13,23 @@ module Authorizy
         Authorizy.config.denied.call(self)
       end
 
-      def authorizy?(controller, action)
+      def authorizy?(controller, action, custom_params: {})
         params['controller'] = controller
         params['action'] = action
 
-        Authorizy::Core.new(authorizy_user, params, session, cop: authorizy_cop).access?
+        parameters = params.merge(custom_params)
+
+        Authorizy::Core.new(authorizy_user, parameters, session, cop: authorizy_cop(parameters)).access?
       end
 
       private
 
-      def authorizy_user
-        Authorizy.config.current_user.call(self)
+      def authorizy_cop(parameters = params)
+        Authorizy.config.cop.new(authorizy_user, parameters, session)
       end
 
-      def authorizy_cop
-        Authorizy.config.cop.new(authorizy_user, params, session)
+      def authorizy_user
+        Authorizy.config.current_user.call(self)
       end
     end
   end
