@@ -4,7 +4,7 @@
 [![Gem Version](https://badge.fury.io/rb/authorizy.svg)](https://badge.fury.io/rb/authorizy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f312587b4f126bb13e85/maintainability)](https://codeclimate.com/github/wbotelhos/authorizy/maintainability)
 [![Coverage](https://codecov.io/gh/wbotelhos/authorizy/branch/main/graph/badge.svg)](https://codecov.io/gh/wbotelhos/authorizy)
-[![Sponsor](https://img.shields.io/badge/sponsor-%3C3-green)](https://www.patreon.com/wbotelhos)
+[![Sponsor](https://img.shields.io/badge/sponsor-%3C3-green)](https://github.com/sponsors/wbotelhos)
 
 A JSON based Authorization.
 
@@ -22,7 +22,7 @@ Run the following task to create Authorizy migration and initialize.
 rails g authorizy:install
 ```
 
-Then execute the migration to adds the column `authorizy` to your `users` table.
+Then execute the migration to add the column `authorizy` to your `users` table.
 
 ```sh
 rake db:migrate
