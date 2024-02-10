@@ -19,7 +19,7 @@ RSpec.describe DummyController, '#authorizy', type: :controller do
     end
 
     context 'when method resturns true' do
-      it 'denies the access' do
+      it 'does not deny the access' do
         config_mock(cop: AuthorizyCop, current_user: user) do
           get :action, params: { access: true }
         end
