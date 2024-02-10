@@ -208,15 +208,29 @@ Using on view:
 <% end %>
 ```
 
+Usually, we use the helper to check DB permission, not the runtime permission using the Cop file, although you can do it. Just remember that the parameters will be related to the current page, not the action you're protecting.
+
 Using on jBuilder view:
 
 ```ruby
-json.create_link new_users_url if authorizy?(:users, :create)
+if authorizy?(:users, :create)
+  link_to('Create', new_users_url)
+end
 ```
+
+But if you want to simulate the access on that resource you can manually provide the same parameters dispatched when you normally access that resource:
+
+```ruby
+if authorizy?(:users, :create, params: { role: 'admin' })
+  link_to('Create', new_users_url(role: 'admin'))
+end
+```
+
+Now you're providing the same parameters used in runtime when the user accesses the link, so now, we can check the "future" access and prevent or allow it before happens.
 
 # Specs
 
-To test some routes you'll need to give or not permission to the user, for that you have to ways, where the first is give permission to the user via session:
+To test some routes you'll need to give or not permission to the user, for that you have two ways, where the first is the user via session:
 
 ```ruby
 before do
@@ -238,7 +252,7 @@ end
 
 ## Checks
 
-We have a couple of check, here is the order:
+We have a couple of checks, here is the order:
 
 1. `Authorizy::BaseCop#access?`;
 2. `session[:permissions]`;
@@ -247,15 +261,15 @@ We have a couple of check, here is the order:
 
 ## Performance
 
-If you have few permissions, you can save the permissions in the session and avoid hit database many times, but if you have a couple of them, maybe it's a good idea save it in some place like [Redis](https://redis.io).
+If you have few permissions, you can save the permissions in the session and avoid hitting the database many times, but if you have a couple of them, maybe it's a good idea to save them in some place like [Redis](https://redis.io).
 
 ## Management
 
-It's a good idea you keep your permissions in the database, so the customer can change it dynamic. You can load all permissions when the user is logged and cache it later. For cache expiration, you can trigger a refresh everytime that the permissions change.
+It's a good idea you keep your permissions in the database, so the customer can change it dynamically. You can load all permissions when the user is logged in and cache it later. For cache expiration, you can trigger a refresh every time that the permissions change.
 
 ## Database Structure
 
-Inside database you can use the following relation to dynamicly change your permissions:
+Inside the database, you can use the following relation to dynamically change your permissions:
 
 ```ruby
 plans -> plans_permissions <- permissions
@@ -269,7 +283,7 @@ plans -> plans_permissions <- permissions
 
 ## RSpec
 
-You can test you app passing through all authorizy layers:
+You can test your app by passing through all Authorizy layers:
 
 ```ruby
 user = User.create!(permission: { permissions: [[:users, :create]] })

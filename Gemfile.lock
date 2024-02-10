@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    authorizy (0.4.1)
+    authorizy (0.5.0)
 
 GEM
   remote: https://rubygems.org/

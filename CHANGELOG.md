@@ -1,3 +1,9 @@
+# v0.5.0
+
+## Fixes
+
+- The `authorizy?` helper now accepts custom parameters;
+
 # v0.4.1
 
 ## Fixes
