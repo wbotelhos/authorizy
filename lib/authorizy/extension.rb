@@ -18,8 +18,9 @@ module Authorizy
         params['action'] = action
 
         parameters = params.merge(custom_params)
+        cop = authorizy_cop(parameters)
 
-        Authorizy::Core.new(authorizy_user, parameters, session, cop: authorizy_cop(parameters)).access?
+        Authorizy::Core.new(authorizy_user, parameters, session, cop:).access?
       end
 
       private
