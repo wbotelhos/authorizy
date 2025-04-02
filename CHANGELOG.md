@@ -1,3 +1,10 @@
+# v0.6.0
+
+## Updates
+
+- Set `activesupport` as production dependency
+- Update gemspec to not include specs into the gem
+
 # v0.5.0
 
 ## Fixes
