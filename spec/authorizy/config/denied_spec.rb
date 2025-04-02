@@ -8,7 +8,7 @@ RSpec.describe Authorizy::Config, '#denied' do
       let!(:context) do
         double('context',
           params: { controller: 'users', action: 'index' },
-          request: OpenStruct.new(xhr?: true)
+          request: Struct.new(:xhr?).new(xhr?: true)
         )
       end
 
@@ -25,7 +25,7 @@ RSpec.describe Authorizy::Config, '#denied' do
       let!(:context) do
         double('context',
           params: { controller: 'users', action: 'index' },
-          request: OpenStruct.new(xhr?: false),
+          request: Struct.new(:xhr?).new(xhr?: false),
           root_url: 'root_url'
         )
       end

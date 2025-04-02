@@ -5,7 +5,7 @@ RSpec.describe Authorizy::Config, '#redirect_url' do
 
   context 'when uses default value' do
     context 'when context responds to root_url' do
-      let!(:context) { OpenStruct.new(root_url: '/root') }
+      let!(:context) { Struct.new(:root_url).new(root_url: '/root') }
 
       it 'is called' do
         expect(config.redirect_url.call(context)).to eq('/root')

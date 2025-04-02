@@ -2,7 +2,7 @@
 
 RSpec.describe Authorizy::Core, '#access?' do
   context 'when cop#access? returns true' do
-    let!(:cop) { OpenStruct.new(access?: true) }
+    let!(:cop) { Struct.new(:access?).new(access?: true) }
     let!(:current_user) { User.new }
     let!(:params) { { action: 'any', controller: 'any' } }
     let!(:session) { {} }
@@ -13,7 +13,7 @@ RSpec.describe Authorizy::Core, '#access?' do
   end
 
   context 'when permissions is in the current user' do
-    let!(:cop) { OpenStruct.new(access?: false) }
+    let!(:cop) { Struct.new(:access?).new(access?: false) }
     let!(:current_user) { User.new(authorizy: { permissions: [%w[controller create]] }) }
     let!(:params) { { controller: 'controller', action: 'create' } }
     let!(:session) { {} }
@@ -24,7 +24,7 @@ RSpec.describe Authorizy::Core, '#access?' do
   end
 
   context 'when session has no permission nor the user' do
-    let!(:cop) { OpenStruct.new(access?: false) }
+    let!(:cop) { Struct.new(:access?).new(access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { controller: 'match', action: 'create' } }
     let!(:session) { {} }

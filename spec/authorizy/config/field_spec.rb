@@ -5,7 +5,7 @@ RSpec.describe Authorizy::Config, '#field' do
 
   context 'when uses default value' do
     context 'when current_user responds to authorizy' do
-      let!(:current_user) { OpenStruct.new(authorizy: { permissions: [%i[users index]] }) }
+      let!(:current_user) { Struct.new(:authorizy).new(authorizy: { permissions: [%i[users index]] }) }
 
       it 'is called' do
         expect(config.field.call(current_user)).to eq(permissions: [%i[users index]])

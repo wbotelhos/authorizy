@@ -5,7 +5,7 @@ RSpec.describe Authorizy::Config, '#current_user' do
 
   context 'when uses default value' do
     context 'when context responds to current_user' do
-      let!(:context) { OpenStruct.new(current_user: 'user') }
+      let!(:context) { Struct.new(:current_user).new(current_user: 'user') }
 
       it 'is called' do
         expect(config.current_user.call(context)).to eq('user')
