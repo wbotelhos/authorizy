@@ -48,25 +48,35 @@ RSpec.describe DummyController, '#authorizy?', type: :controller do
       end
     end
 
-    context 'when custom params is provided' do
+    describe ':custom_params' do
       let!(:core) { instance_double(Authorizy::Core, access?: true) }
-      let!(:parameters) { ActionController::Parameters.new(controller: 'controller', action: 'action', key: 'value') }
+      let!(:parameters) { ActionController::Parameters.new(controller: 'controller', action: 'action') }
 
-      it 'forwards to core' do
-        expect(Authorizy::Core).to receive(:new)
-          .with(user, parameters, session, cop: config.cop)
-          .and_return(core)
+      before { allow(Authorizy::Core).to receive(:new).and_return(core) }
 
-        config_mock(current_user: user) do
-          controller.helpers.authorizy?('controller', 'action', custom_params: { key: 'value' })
+      context 'when is provided' do
+        let!(:custom_params) { { key: 'value' } }
+        let!(:expected_params) { parameters.merge(custom_params) }
+
+        it 'forwards to core' do
+          config_mock(current_user: user) do
+            controller.helpers.authorizy?('controller', 'action', custom_params:)
+
+            expect(Authorizy::Core).to have_received(:new).with(user, expected_params, session, cop: config.cop)
+          end
         end
       end
-    end
 
-    context 'when custom params is provided' do
-      it 'forwards to cop' do
-        config_mock(cop: AuthorizyCop, current_user: user) do
-          controller.helpers.authorizy?('custom_params', 'action', custom_params: { custom: 'true' })
+      context 'when is not provided' do
+        let!(:custom_params) { {} }
+        let!(:expected_params) { parameters.merge(custom_params) }
+
+        it 'forwards to cop' do
+          config_mock(cop: AuthorizyCop, current_user: user) do
+            controller.helpers.authorizy?('controller', 'action', custom_params:)
+
+            expect(Authorizy::Core).to have_received(:new).with(user, expected_params, session, cop: config.cop)
+          end
         end
       end
     end
