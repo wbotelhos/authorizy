@@ -1,2 +1,3 @@
 inherit_from:
   - https://raw.githubusercontent.com/wbotelhos/dotfiles/master/.rubocop.yml
+  - https://raw.githubusercontent.com/wbotelhos/dotfiles/master/.rubocop-rspec.yml
