@@ -1,6 +1,6 @@
 # Authorizy
 
-[![CI](https://github.com/wbotelhos/authorizy/workflows/CI/badge.svg)](https://github.com/wbotelhos/authorizy/actions)
+[![Tests](https://github.com/wbotelhos/authorizy/workflows/Tests/badge.svg)](https://github.com/wbotelhos/authorizy/actions?query=workflow:Tests)
 [![Gem Version](https://badge.fury.io/rb/authorizy.svg)](https://badge.fury.io/rb/authorizy)
 [![Maintainability](https://api.codeclimate.com/v1/badges/f312587b4f126bb13e85/maintainability)](https://codeclimate.com/github/wbotelhos/authorizy/maintainability)
 [![Coverage](https://codecov.io/gh/wbotelhos/authorizy/branch/main/graph/badge.svg)](https://codecov.io/gh/wbotelhos/authorizy)
