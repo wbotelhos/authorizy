@@ -12,7 +12,6 @@ Gem::Specification.new do |spec|
   spec.license          = 'MIT'
   spec.name             = 'authorizy'
   spec.summary          = 'A JSON based Authorization.'
-  spec.test_files       = Dir['spec/**/*']
   spec.version          = Authorizy::VERSION
 
   spec.add_development_dependency 'activerecord'
