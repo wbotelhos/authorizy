@@ -15,13 +15,5 @@ Gem::Specification.new do |spec|
   spec.summary = 'A JSON based Authorization.'
   spec.version = Authorizy::VERSION
 
-  spec.add_development_dependency 'activerecord'
-  spec.add_development_dependency 'codecov'
-  spec.add_development_dependency 'pg'
-  spec.add_development_dependency 'pry-byebug'
-  spec.add_development_dependency 'rake'
-  spec.add_development_dependency 'rspec-rails'
-  spec.add_development_dependency 'rubocop-performance'
-  spec.add_development_dependency 'rubocop-rails'
-  spec.add_development_dependency 'rubocop-rspec'
+  spec.add_dependency('activesupport')
 end
