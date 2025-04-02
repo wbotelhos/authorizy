@@ -10,6 +10,7 @@ Gem::Specification.new do |spec|
   spec.files            = `git ls-files lib`.split("\n")
   spec.homepage         = 'https://github.com/wbotelhos/authorizy'
   spec.license          = 'MIT'
+  spec.metadata['rubygems_mfa_required'] = 'true'
   spec.name             = 'authorizy'
   spec.summary          = 'A JSON based Authorization.'
   spec.version          = Authorizy::VERSION
