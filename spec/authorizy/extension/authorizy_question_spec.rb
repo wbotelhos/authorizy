@@ -19,7 +19,7 @@ RSpec.describe DummyController, '#authorizy?', type: :controller do
     before { allow(Authorizy).to receive(:config).and_return(config) }
 
     context 'when authorizy returns false' do
-      let!(:core) { instance_double('Authorizy::Core', access?: false) }
+      let!(:core) { instance_double(Authorizy::Core, access?: false) }
       let!(:parameters) { ActionController::Parameters.new(controller: 'controller', action: 'action') }
 
       it 'returns false' do
@@ -34,7 +34,7 @@ RSpec.describe DummyController, '#authorizy?', type: :controller do
     end
 
     context 'when authorizy returns true' do
-      let!(:core) { instance_double('Authorizy::Core', access?: true) }
+      let!(:core) { instance_double(Authorizy::Core, access?: true) }
       let!(:parameters) { ActionController::Parameters.new(controller: 'controller', action: 'action') }
 
       it 'returns true' do
@@ -49,7 +49,7 @@ RSpec.describe DummyController, '#authorizy?', type: :controller do
     end
 
     context 'when custom params is provided' do
-      let!(:core) { instance_double('Authorizy::Core', access?: true) }
+      let!(:core) { instance_double(Authorizy::Core, access?: true) }
       let!(:parameters) { ActionController::Parameters.new(controller: 'controller', action: 'action', key: 'value') }
 
       it 'forwards to core' do

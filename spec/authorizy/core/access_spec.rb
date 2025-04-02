@@ -8,7 +8,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     let!(:session) { {} }
 
     it 'is authorized based in the cop response' do
-      expect(described_class.new(current_user, params, session, cop: cop).access?).to be(true)
+      expect(described_class.new(current_user, params, session, cop:).access?).to be(true)
     end
   end
 
@@ -19,7 +19,7 @@ RSpec.describe Authorizy::Core, '#access?' do
     let!(:session) { {} }
 
     it 'is authorized based on the user permissions' do
-      expect(described_class.new(current_user, params, session, cop: cop).access?).to be(true)
+      expect(described_class.new(current_user, params, session, cop:).access?).to be(true)
     end
   end
 
@@ -30,18 +30,18 @@ RSpec.describe Authorizy::Core, '#access?' do
     let!(:session) { {} }
 
     it 'does not authorize' do
-      expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
     end
   end
 
   context 'when cop does not respond to controller' do
-    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
+    let!(:cop) { instance_double(Authorizy::BaseCop, access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { action: 'create', controller: 'missing' } }
     let!(:session) { {} }
 
     it 'does not authorize via cop' do
-      expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
     end
   end
 
@@ -64,7 +64,7 @@ RSpec.describe Authorizy::Core, '#access?' do
       end
 
       it 'is not authorized by cop' do
-        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+        expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe Authorizy::Core, '#access?' do
       end
 
       it 'is authorized by the cop' do
-        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(true)
+        expect(described_class.new(current_user, params, session, cop:).access?).to be(true)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe Authorizy::Core, '#access?' do
       end
 
       it 'is converted to false' do
-        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+        expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
       end
     end
 
@@ -118,7 +118,7 @@ RSpec.describe Authorizy::Core, '#access?' do
       end
 
       it 'is converted to false' do
-        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+        expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
       end
     end
 
@@ -134,7 +134,7 @@ RSpec.describe Authorizy::Core, '#access?' do
       end
 
       it 'is converted to false' do
-        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+        expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
       end
     end
 
@@ -152,30 +152,30 @@ RSpec.describe Authorizy::Core, '#access?' do
       end
 
       it 'is converted to false' do
-        expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+        expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
       end
     end
   end
 
   context 'when user has the controller permission but not action' do
-    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
+    let!(:cop) { instance_double(Authorizy::BaseCop, access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { controller: 'controller', action: 'action' } }
     let!(:session) { { permissions: [%w[controller miss]] } }
 
     it 'is not authorized' do
-      expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
     end
   end
 
   context 'when user has the action permission but not controller' do
-    let!(:cop) { instance_double('Authorizy::BaseCop', access?: false) }
+    let!(:cop) { instance_double(Authorizy::BaseCop, access?: false) }
     let!(:current_user) { User.new }
     let!(:params) { { controller: 'controller', action: 'action' } }
     let!(:session) { { permissions: [%w[miss action]] } }
 
     it 'is not authorized' do
-      expect(described_class.new(current_user, params, session, cop: cop).access?).to be(false)
+      expect(described_class.new(current_user, params, session, cop:).access?).to be(false)
     end
   end
 end

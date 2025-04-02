@@ -7,7 +7,7 @@ RSpec.describe DummyController, '#authorizy', type: :controller do
   let!(:user) { nil }
 
   context 'when user has access' do
-    let!(:authorizy_core) { instance_double('Authorizy::Core', access?: true) }
+    let!(:authorizy_core) { instance_double(Authorizy::Core, access?: true) }
 
     before do
       allow(Authorizy::Core).to receive(:new)
@@ -35,7 +35,7 @@ RSpec.describe DummyController, '#authorizy', type: :controller do
   end
 
   context 'when user has no access' do
-    let!(:authorizy_core) { instance_double('Authorizy::Core', access?: false) }
+    let!(:authorizy_core) { instance_double(Authorizy::Core, access?: false) }
 
     before do
       allow(Authorizy::Core).to receive(:new)

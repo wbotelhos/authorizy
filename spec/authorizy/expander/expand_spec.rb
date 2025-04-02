@@ -55,7 +55,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
       let!(:permissions) { [%w[controller action]] }
 
       it 'addes the dependencies permissions' do
-        config_mock(dependencies: dependencies) do
+        config_mock(dependencies:) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
             %w[controller_2 action_2],
@@ -69,7 +69,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
       let!(:permissions) { [%w[controller action]] }
 
       it 'addes the dependencies permissions' do
-        config_mock(dependencies: dependencies) do
+        config_mock(dependencies:) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
             %w[controller_2 action_2],
@@ -86,7 +86,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
       let(:aliases) { { 'action' => 'action_2' } }
 
       it 'maps the action with the current controller' do
-        config_mock(aliases: aliases) do
+        config_mock(aliases:) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
             %w[controller action_2],
@@ -99,7 +99,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
       let(:aliases) { { action: :action_2 } }
 
       it 'maps the action with the current controller' do
-        config_mock(aliases: aliases) do
+        config_mock(aliases:) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
             %w[controller action_2],
@@ -112,7 +112,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
       let(:aliases) { { action: %w[action_2 action_3] } }
 
       it 'maps the actions with the current controller' do
-        config_mock(aliases: aliases) do
+        config_mock(aliases:) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
             %w[controller action_2],
@@ -126,7 +126,7 @@ RSpec.describe Authorizy::Expander, '#expand' do
       let(:aliases) { { action: %i[action_2 action_3] } }
 
       it 'maps the actions with the current controller' do
-        config_mock(aliases: aliases) do
+        config_mock(aliases:) do
           expect(expander.expand(permissions)).to match_array [
             %w[controller action],
             %w[controller action_2],

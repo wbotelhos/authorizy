@@ -4,13 +4,13 @@ require 'rspec/expectations'
 
 RSpec::Matchers.define :be_authorized do |controller, action, params: {}, session: {}|
   match do |user|
-    parameters = params.merge(controller: controller, action: action)
+    parameters = params.merge(controller:, action:)
 
     access?(user, parameters, session)
   end
 
   match_when_negated do |user|
-    parameters = params.merge(controller: controller, action: action)
+    parameters = params.merge(controller:, action:)
 
     !access?(user, parameters, session)
   end
@@ -28,7 +28,7 @@ RSpec::Matchers.define :be_authorized do |controller, action, params: {}, sessio
   def access?(user, params, session)
     cop = Authorizy.config.cop.new(user, params, session)
 
-    Authorizy::Core.new(user, params, session, cop: cop).access?
+    Authorizy::Core.new(user, params, session, cop:).access?
   end
 
   def maybe_params_or_session(message, params, session)
