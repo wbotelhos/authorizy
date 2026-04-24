@@ -23,7 +23,26 @@ RSpec::Matchers.define :be_authorized do |controller, action, params: {}, sessio
     maybe_params_or_session("expected #{user.class}##{user.id} not to be authorized in #{data}", params, session)
   end
 
+  description do
+    parts = [%(be authorized "#{expected[0]}", "#{expected[1]}")]
+
+    options = [].tap do |item|
+      item << "params: #{format_hash(params)}" if params.any?
+      item << "session: #{format_hash(session)}" if session.any?
+    end
+
+    parts << "and {#{options.join(', ')}}" if options.any?
+
+    parts.join(', ')
+  end
+
   private
+
+  def format_hash(hash)
+    pairs = hash.map { |k, v| "#{k}: #{v.is_a?(Hash) ? format_hash(v) : v.inspect}" }
+
+    "{#{pairs.join(', ')}}"
+  end
 
   def access?(user, params, session)
     cop = Authorizy.config.cop.new(user, params, session)

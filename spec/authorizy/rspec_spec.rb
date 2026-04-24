@@ -8,7 +8,7 @@ RSpec.describe RSpec::Matchers, '#be_authorized' do
     matcher = be_authorized('controller', 'action', params: { params: true }, session: { session: true })
 
     expect(matcher.description).to eq %(
-      be authorized "controller", "action", and {:params=>{:params=>true}, :session=>{:session=>true}}
+      be authorized "controller", "action", and {params: {params: true}, session: {session: true}}
     ).squish
   end
 
