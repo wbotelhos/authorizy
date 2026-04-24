@@ -51,6 +51,9 @@ Layout/MultilineMethodCallBraceLayout:
 Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 
+Lint/MissingSuper:
+  AllowedParentClasses: [ViewComponent::Base]
+
 Metrics/AbcSize:
   Max: 50
 
@@ -68,6 +71,7 @@ Naming/MethodParameterName:
     - el
     - id
     - lr
+    - on
 
 Naming/VariableNumber:
   AllowedPatterns: ['_v\d+\z']
