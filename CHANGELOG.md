@@ -1,3 +1,9 @@
+# v0.6.1
+
+## Fixes
+
+- Denied JSON requests now will render JSON correctly
+
 # v0.6.0
 
 ## Updates
