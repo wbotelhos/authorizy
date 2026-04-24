@@ -4,13 +4,10 @@ RSpec.describe Authorizy::Config, '#denied' do
   let!(:config) { described_class.new }
 
   context 'with default denied callback' do
-    context 'when is a xhr request' do
-      let!(:context) do
-        double('context',
-          params: { controller: 'users', action: 'index' },
-          request: Struct.new(:xhr?).new(xhr?: true)
-        )
-      end
+    context 'when is not a html request' do
+      let!(:format)  { Struct.new(:html?).new(false) }
+      let!(:request) { Struct.new(:format).new(format) }
+      let!(:context) { double('context', params: { controller: 'users', action: 'index' }, request:) }
 
       it 'renders' do
         allow(context).to receive(:render)
@@ -21,14 +18,10 @@ RSpec.describe Authorizy::Config, '#denied' do
       end
     end
 
-    context 'when is not a xhr request' do
-      let!(:context) do
-        double('context',
-          params: { controller: 'users', action: 'index' },
-          request: Struct.new(:xhr?).new(xhr?: false),
-          root_url: 'root_url'
-        )
-      end
+    context 'when is a html request' do
+      let!(:format)  { Struct.new(:html?).new(true) }
+      let!(:request) { Struct.new(:format).new(format) }
+      let!(:context) { double('context', params: { controller: 'users', action: 'index' }, request:, root_url: 'root_url') }
 
       it 'redirects' do
         allow(context).to receive(:redirect_to)

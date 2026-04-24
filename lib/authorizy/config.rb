@@ -12,9 +12,9 @@ module Authorizy
       @denied = lambda { |context|
         info = I18n.t('authorizy.denied', controller: context.params[:controller], action: context.params[:action])
 
-        return context.render(json: { message: info }, status: 403) if context.request.xhr?
+        return context.redirect_to(redirect_url.call(context), info:) if context.request.format.html?
 
-        context.redirect_to(redirect_url.call(context), info:)
+        context.render(json: { message: info }, status: 403)
       }
 
       @dependencies = {}
